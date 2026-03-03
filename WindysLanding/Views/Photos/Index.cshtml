@@ -1,0 +1,71 @@
+@model IEnumerable<WindysLanding.Models.Photo>
+@{
+    ViewData["Title"] = "Manage Photos";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Manage Photos</h1>
+    <a asp-action="Create" class="btn btn-primary">Add New Photo</a>
+</div>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Preview</th>
+            <th>Belongs To</th>
+            <th>Caption</th>
+            <th>URL</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    <img src="@item.ImgUrl" alt="@item.Caption" style="max-width: 100px; max-height: 75px; object-fit: cover;" />
+                </td>
+                <td>
+                    @if (item.AnimalId.HasValue)
+                    {
+                        <span class="badge bg-primary">Animal: @item.Animal?.Name</span>
+                    }
+                    @if (item.SponsorCompanyId.HasValue)
+                    {
+                        <span class="badge bg-success">Sponsor: @item.SponsorCompany?.Name</span>
+                    }
+                    @if (item.NewsletterId.HasValue)
+                    {
+                        <span class="badge bg-info">Newsletter: @item.Newsletter?.Title</span>
+                    }
+                    @if (item.EventId.HasValue)
+                    {
+                        <span class="badge bg-warning">Event: @item.Event?.Name</span>
+                    }
+                    @if (!item.AnimalId.HasValue && !item.SponsorCompanyId.HasValue && !item.NewsletterId.HasValue && !item.EventId.HasValue)
+                    {
+                        <span class="badge bg-secondary">Unassigned</span>
+                    }
+                </td>
+                <td>@item.Caption</td>
+                <td>
+                    <small class="text-muted">@(item.ImgUrl.Length > 50 ? item.ImgUrl.Substring(0, 50) + "..." : item.ImgUrl)</small>
+                </td>
+                <td>
+                    <div class="btn-group" role="group">
+                        <a asp-action="Edit" asp-route-id="@item.PhotoId" class="btn btn-sm btn-outline-secondary">Edit</a>
+                        <a asp-action="Details" asp-route-id="@item.PhotoId" class="btn btn-sm btn-outline-info">Details</a>
+                        <a asp-action="Delete" asp-route-id="@item.PhotoId" class="btn btn-sm btn-outline-danger">Delete</a>
+                    </div>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">
+        <p>No photos yet. <a asp-action="Create">Add your first photo</a></p>
+    </div>
+}

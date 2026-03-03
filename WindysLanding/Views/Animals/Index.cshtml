@@ -1,0 +1,67 @@
+@model IEnumerable<WindysLanding.Models.Animal>
+@{
+    ViewData["Title"] = "Animals";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Our Animals</h1>
+    <a asp-action="Create" class="btn btn-primary">Add New Animal</a>
+</div>
+
+<div class="row">
+    @foreach (var item in Model)
+    {
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                @if (item.Photos != null && item.Photos.Any())
+                {
+                    <img src="@item.Photos.First().ImgUrl" class="card-img-top" alt="@item.Name" style="height: 250px; object-fit: cover;">
+                }
+                else
+                {
+                    <div class="card-img-top bg-secondary d-flex align-items-center justify-content-center" style="height: 250px;">
+                        <span class="text-white">No Photo</span>
+                    </div>
+                }
+                <div class="card-body">
+                    <h5 class="card-title">@item.Name</h5>
+                    <p class="card-text">
+                        <strong>Type:</strong> @item.AnimalType<br />
+                        <strong>Age:</strong> @(item.Age.HasValue? item.Age + " years" : "Unknown")<br />
+                        <strong>Breed:</strong> @(item.Breed ?? "Mixed")<br />
+                        <strong>Gender:</strong> @item.Gender<br />
+                        <strong>Status:</strong>
+                        @if (item.AdoptionStatus)
+                        {
+                            <span class="badge bg-success">Adopted</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-primary">Available</span>
+                        }
+                    </p>
+                    @if (!string.IsNullOrEmpty(item.Description))
+                    {
+                        <p class="card-text">
+                            <small>@(item.Description.Length > 100 ? item.Description.Substring(0, 100) + "..." : item.Description)</small>
+                        </p>
+                    }
+                </div>
+                <div class="card-footer">
+                    <div class="btn-group w-100" role="group">
+                        <a asp-action="Details" asp-route-id="@item.AnimalId" class="btn btn-sm btn-outline-primary">Details</a>
+                        <a asp-action="Edit" asp-route-id="@item.AnimalId" class="btn btn-sm btn-outline-secondary">Edit</a>
+                        <a asp-action="Delete" asp-route-id="@item.AnimalId" class="btn btn-sm btn-outline-danger">Delete</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">
+        <p>No animals found. <a asp-action="Create">Add your first animal</a></p>
+    </div>
+}

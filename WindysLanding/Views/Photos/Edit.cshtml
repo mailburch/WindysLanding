@@ -1,0 +1,98 @@
+@model WindysLanding.Models.Photo
+@{
+    ViewData["Title"] = "Edit Photo";
+}
+
+<h1>Edit Photo</h1>
+<hr />
+
+<div class="alert alert-info">
+    <strong>Note:</strong> This photo can belong to only ONE thing. Select only one option below and leave the others blank.
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="PhotoId" />
+
+            <h5 class="mt-3">Photo Belongs To (Choose One):</h5>
+
+            <div class="form-group">
+                <label asp-for="AnimalId" class="control-label"></label>
+                <select asp-for="AnimalId" class="form-control" asp-items="ViewBag.AnimalId">
+                    <option value="">-- None --</option>
+                </select>
+                <span asp-validation-for="AnimalId" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="SponsorCompanyId" class="control-label"></label>
+                <select asp-for="SponsorCompanyId" class="form-control" asp-items="ViewBag.SponsorCompanyId">
+                    <option value="">-- None --</option>
+                </select>
+                <span asp-validation-for="SponsorCompanyId" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="NewsletterId" class="control-label"></label>
+                <select asp-for="NewsletterId" class="form-control" asp-items="ViewBag.NewsletterId">
+                    <option value="">-- None --</option>
+                </select>
+                <span asp-validation-for="NewsletterId" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="EventId" class="control-label"></label>
+                <select asp-for="EventId" class="form-control" asp-items="ViewBag.EventId">
+                    <option value="">-- None --</option>
+                </select>
+                <span asp-validation-for="EventId" class="text-danger"></span>
+            </div>
+
+            <hr />
+            <h5>Photo Details:</h5>
+
+            <div class="form-group">
+                <label asp-for="ImgUrl" class="control-label"></label>
+                <input asp-for="ImgUrl" class="form-control" />
+                <span asp-validation-for="ImgUrl" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Caption" class="control-label"></label>
+                <input asp-for="Caption" class="form-control" />
+                <span asp-validation-for="Caption" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mt-3">
+                <input type="submit" value="Save Changes" class="btn btn-primary" />
+                <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+
+    <div class="col-md-6">
+        @if (!string.IsNullOrEmpty(Model.ImgUrl))
+        {
+            <div class="card">
+                <div class="card-header">
+                    <strong>Current Photo Preview</strong>
+                </div>
+                <div class="card-body text-center">
+                    <img src="@Model.ImgUrl" alt="@Model.Caption" class="img-fluid" style="max-height: 400px;" />
+                    @if (!string.IsNullOrEmpty(Model.Caption))
+                    {
+                        <p class="mt-2"><em>@Model.Caption</em></p>
+                    }
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

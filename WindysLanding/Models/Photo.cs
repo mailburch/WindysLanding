@@ -11,20 +11,19 @@ namespace WindysLanding.Models
         // Foreign Keys 
         [Display(Name = "Animal")]
         public int? AnimalId { get; set; }
-        
+
         [Display(Name = "Sponsor Company")]
         public int? SponsorCompanyId { get; set; }
-        
+
         [Display(Name = "Newsletter")]
         public int? NewsletterId { get; set; }
-        
+
         [Display(Name = "Event")]
         public int? EventId { get; set; }
 
-        [Required]
         [StringLength(500)]
         [Display(Name = "Image URL")]
-        public string ImgUrl { get; set; } = string.Empty;
+        public string? ImgUrl { get; set; }
 
         [StringLength(200)]
         [Display(Name = "Caption")]

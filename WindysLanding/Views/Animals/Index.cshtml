@@ -11,11 +11,55 @@
 <div class="row">
     @foreach (var item in Model)
     {
+        var carouselId = "carousel-" + item.AnimalId;
         <div class="col-md-4 mb-4">
             <div class="card h-100">
                 @if (item.Photos != null && item.Photos.Any())
                 {
-                    <img src="@item.Photos.First().ImgUrl" class="card-img-top" alt="@item.Name" style="height: 250px; object-fit: cover;">
+                    <!-- Carousel for multiple photos -->
+                    <div id="@carouselId" class="carousel slide" data-bs-ride="false">
+                        <div class="carousel-inner">
+                            @{
+                                var photoIndex = 0;
+                                foreach (var photo in item.Photos)
+                                {
+                                    var activeClass = photoIndex == 0 ? "active" : "";
+                                    <div class="carousel-item @activeClass">
+                                        <img src="@photo.ImgUrl" class="d-block w-100" alt="@photo.Caption" style="height: 250px; object-fit: cover;">
+                                        @if (!string.IsNullOrEmpty(photo.Caption))
+                                        {
+                                            <div class="carousel-caption d-none d-md-block" style="background-color: rgba(0,0,0,0.6); border-radius: 5px;">
+                                                <p class="mb-0">@photo.Caption</p>
+                                            </div>
+                                        }
+                                    </div>
+                                    photoIndex++;
+                                }
+                            }
+                        </div>
+
+                        @if (item.Photos.Count() > 1)
+                        {
+                            <!-- Carousel controls (only show if more than 1 photo) -->
+                            <button class="carousel-control-prev" type="button" data-bs-target="#@carouselId" data-bs-slide="prev">
+                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Previous</span>
+                            </button>
+                            <button class="carousel-control-next" type="button" data-bs-target="#@carouselId" data-bs-slide="next">
+                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Next</span>
+                            </button>
+
+                            <!-- Indicators -->
+                            <div class="carousel-indicators">
+                                @for (var i = 0; i < item.Photos.Count(); i++)
+                                {
+                                    var activeIndicator = i == 0 ? "active" : "";
+                                    <button type="button" data-bs-target="#@carouselId" data-bs-slide-to="@i" class="@activeIndicator" aria-current="@(i == 0 ? "true" : "false")" aria-label="Slide @(i + 1)"></button>
+                                }
+                            </div>
+                        }
+                    </div>
                 }
                 else
                 {
@@ -23,6 +67,7 @@
                         <span class="text-white">No Photo</span>
                     </div>
                 }
+
                 <div class="card-body">
                     <h5 class="card-title">@item.Name</h5>
                     <p class="card-text">

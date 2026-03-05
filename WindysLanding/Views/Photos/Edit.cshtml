@@ -12,7 +12,7 @@
 
 <div class="row">
     <div class="col-md-6">
-        <form asp-action="Edit">
+        <form asp-action="Edit" method="post" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="PhotoId" />
 
@@ -51,12 +51,27 @@
             </div>
 
             <hr />
-            <h5>Photo Details:</h5>
+            <h5>Update Photo:</h5>
 
             <div class="form-group">
-                <label asp-for="ImgUrl" class="control-label"></label>
+                <label for="ImageFile" class="control-label">Upload New Image (Optional)</label>
+                <input type="file" id="ImageFile" name="ImageFile" class="form-control" accept="image/*" />
+                <small class="form-text text-muted">
+                    Upload a new image to replace the current one. Leave blank to keep current image.
+                </small>
+            </div>
+
+            <div class="text-center my-3">
+                <strong>- OR -</strong>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="ImgUrl" class="control-label">Change Image URL</label>
                 <input asp-for="ImgUrl" class="form-control" />
                 <span asp-validation-for="ImgUrl" class="text-danger"></span>
+                <small class="form-text text-muted">
+                    Or update the URL directly (leave blank if uploading a new file)
+                </small>
             </div>
 
             <div class="form-group">
@@ -88,6 +103,19 @@
                 </div>
             </div>
         }
+
+        <div class="card mt-3">
+            <div class="card-header">
+                <strong>Tips</strong>
+            </div>
+            <div class="card-body">
+                <ul>
+                    <li><strong>Upload new file:</strong> Choose a file to replace current image</li>
+                    <li><strong>Change URL:</strong> Update the URL field to use a different online image</li>
+                    <li><strong>Keep current:</strong> Leave both blank to keep the existing image</li>
+                </ul>
+            </div>
+        </div>
     </div>
 </div>
 

@@ -4,6 +4,23 @@
     ViewData["Title"] = "Success Stories";
 }
 
+<style>
+    /* Make long text wrap properly */
+    .story-content {
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+        white-space: normal;
+    }
+
+    /* Optional: clamp preview to 3 lines for uniform height */
+    .story-content.clamp {
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+</style>
+
 <h2 class="text-center mt-4">SUCCESS STORIES</h2>
 <p class="text-center">See the happy endings we've helped create</p>
 
@@ -26,7 +43,7 @@
             </div>
 
             <!-- Story Content -->
-            <div class="col-md-7">
+            <div class="col-md-6">
 
                 <h4>@item.Title</h4>
 
@@ -34,7 +51,7 @@
                     Adopted: @item.DatePublished.ToString("MMMM yyyy")
                 </p>
 
-                <p>
+                <p class ="story-content clamp">
                     @(item.Content.Length > 150
                                     ? item.Content.Substring(0, 150) + "..."
                                     : item.Content)

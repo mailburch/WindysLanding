@@ -1,5 +1,20 @@
 @model WindysLanding.Models.SuccessStory
+<style>
+    /* Make long text wrap properly */
+    .story-content {
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+        white-space: normal;
+    }
 
+        /* Optional: clamp preview to 3 lines for uniform height */
+        .story-content.clamp {
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+</style>
 <div class="container mt-4">
 
     <h2>@Model.Title</h2>
@@ -25,7 +40,7 @@
                 @Model.Animal?.AnimalType
             </p>
 
-            <p>
+            <p class="story-content clamp">
                 @Model.Content
             </p>
 

@@ -45,22 +45,46 @@ namespace WindysLanding.Controllers
         // GET: VolunteerApplications/Create
         public IActionResult Create()
         {
+            // TODO (Google Auth milestone):
+            // - If User is authenticated, prefill Name/Email from claims and pass a prefilled model to the View.
+            // - When auth is enforced, add [Authorize] to Create GET + POST (or controller).
+
             return View();
         }
 
         // POST: VolunteerApplications/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // POST: VolunteerApplications/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ApplicationId,Name,Email,Phone,VolunteerDescription,ApplicationDate,WaiverSigned,WaiverSignedDate")] VolunteerApplication volunteerApplication)
+        public async Task<IActionResult> Create([Bind("Name,Email,Phone,VolunteerDescription,WaiverSigned")] VolunteerApplication volunteerApplication)
         {
             if (ModelState.IsValid)
             {
+                // These are not on the public form — set them server-side.
+                volunteerApplication.ApplicationDate = DateTime.Now;
+
+                if (volunteerApplication.WaiverSigned)
+                {
+                    volunteerApplication.WaiverSignedDate ??= DateTime.Now;
+                }
+                else
+                {
+                    volunteerApplication.WaiverSignedDate = null;
+                }
+
+                // TODO (Google Auth milestone):
+                // - Overwrite volunteerApplication.Name and volunteerApplication.Email from authenticated user claims
+                //   before saving (prevents spoofing).
+
                 _context.Add(volunteerApplication);
                 await _context.SaveChangesAsync();
+
+                // TODO: Redirect to a ThankYou page instead of Index 
                 return RedirectToAction(nameof(Index));
             }
+
             return View(volunteerApplication);
         }
 
@@ -83,9 +107,10 @@ namespace WindysLanding.Controllers
         // POST: VolunteerApplications/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // POST: VolunteerApplications/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ApplicationId,Name,Email,Phone,VolunteerDescription,ApplicationDate,WaiverSigned,WaiverSignedDate")] VolunteerApplication volunteerApplication)
+        public async Task<IActionResult> Edit(int id, [Bind("ApplicationId,Name,Email,Phone,VolunteerDescription,WaiverSigned,WaiverSignedDate")] VolunteerApplication volunteerApplication)
         {
             if (id != volunteerApplication.ApplicationId)
             {
@@ -96,6 +121,26 @@ namespace WindysLanding.Controllers
             {
                 try
                 {
+                    // Prevent the application date from being changed via Edit form:
+                    // Pull original from DB and keep it.
+                    var existing = await _context.VolunteerApplications.AsNoTracking()
+                        .FirstOrDefaultAsync(v => v.ApplicationId == id);
+
+                    if (existing == null)
+                        return NotFound();
+
+                    volunteerApplication.ApplicationDate = existing.ApplicationDate;
+
+                    // Keeps waiver date consistent
+                    if (volunteerApplication.WaiverSigned)
+                    {
+                        volunteerApplication.WaiverSignedDate ??= DateTime.Now;
+                    }
+                    else
+                    {
+                        volunteerApplication.WaiverSignedDate = null;
+                    }
+
                     _context.Update(volunteerApplication);
                     await _context.SaveChangesAsync();
                 }
@@ -110,8 +155,10 @@ namespace WindysLanding.Controllers
                         throw;
                     }
                 }
+
                 return RedirectToAction(nameof(Index));
             }
+
             return View(volunteerApplication);
         }
 

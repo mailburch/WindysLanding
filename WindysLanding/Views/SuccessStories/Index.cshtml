@@ -1,59 +1,78 @@
-@model IEnumerable<WindysLanding.Models.SuccessStory>
+﻿@model IEnumerable<WindysLanding.Models.SuccessStory>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Success Stories";
 }
 
-<h1>Index</h1>
+<h2 class="text-center mt-4">SUCCESS STORIES</h2>
+<p class="text-center">See the happy endings we've helped create</p>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.PhotoId)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Title)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Content)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DatePublished)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Animal)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.PhotoId)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Title)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Content)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DatePublished)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Animal.AnimalType)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.StoryId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.StoryId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.StoryId">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+<div class="container mt-4">
+
+    <p>
+        <a asp-action="Create" class="btn btn-primary mb-3">Create New Story</a>
+    </p>
+
+    @foreach (var item in Model)
+    {
+        <div class="row border rounded p-3 mb-4 align-items-center">
+
+            <!-- Story Image -->
+            <div class="col-md-3 text-center">
+                <img src="~/images/@item.PhotoId"
+                     class="img-fluid rounded"
+                     alt="@item.Title"
+                     style="max-height:150px;" />
+            </div>
+
+            <!-- Story Content -->
+            <div class="col-md-7">
+
+                <h4>@item.Title</h4>
+
+                <p class="text-muted">
+                    Adopted: @item.DatePublished.ToString("MMMM yyyy")
+                </p>
+
+                <p>
+                    @(item.Content.Length > 150
+                                    ? item.Content.Substring(0, 150) + "..."
+                                    : item.Content)
+            </p>
+
+                <p>
+                    <strong>Animal:</strong> @item.Animal?.AnimalType
+                </p>
+
+            </div>
+
+            <!-- Read Story Button -->
+            <div class="col-md-2 text-end">
+
+                <a asp-action="Details"
+                   asp-route-id="@item.StoryId"
+                   class="btn btn-outline-primary mb-2">
+                    Read Full Story →
+                </a>
+
+                <div>
+                    <a asp-action="Edit" asp-route-id="@item.StoryId">Edit</a> |
+                    <a asp-action="Delete" asp-route-id="@item.StoryId">Delete</a>
+                </div>
+
+            </div>
+
+        </div>
+        }
+
+</div>
+
+<div class="text-center mt-4">
+    <p>Want to create your own success story?</p>
+
+    <a asp-controller="Animals"
+       asp-action="Index"
+       class="btn btn-secondary">
+        View Available Animals
+    </a>
+</div>

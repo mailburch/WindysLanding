@@ -1,48 +1,49 @@
 @model WindysLanding.Models.SuccessStory
 
-@{
-    ViewData["Title"] = "Details";
-}
+<div class="container mt-4">
 
-<h1>Details</h1>
+    <h2>@Model.Title</h2>
 
-<div>
-    <h4>SuccessStory</h4>
+    <p class="text-muted">
+        Adopted: @Model.DatePublished.ToString("MMMM yyyy")
+    </p>
+
+    <div class="row mt-4">
+
+        <div class="col-md-4">
+
+            <img src="~/images/@Model.PhotoId"
+                 class="img-fluid rounded"
+                 alt="@Model.Title" />
+
+        </div>
+
+        <div class="col-md-8">
+
+            <p>
+                <strong>Animal:</strong>
+                @Model.Animal?.AnimalType
+            </p>
+
+            <p>
+                @Model.Content
+            </p>
+
+        </div>
+
+    </div>
+
     <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.PhotoId)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.PhotoId)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Title)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Title)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Content)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Content)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.DatePublished)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.DatePublished)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Animal)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Animal.AnimalType)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.StoryId">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+
+    <a asp-action="Edit"
+       asp-route-id="@Model.StoryId"
+       class="btn btn-primary">
+        Edit Story
+    </a>
+
+    <a asp-action="Index"
+       class="btn btn-secondary">
+        Back to Stories
+    </a>
+
 </div>

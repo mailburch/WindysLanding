@@ -1,53 +1,66 @@
 @model IEnumerable<WindysLanding.Models.FAQ>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "FAQs";
+    string? currentCategory = ViewData["CurrentCategory"] as string;
+    string? currentSearch = ViewData["CurrentSearch"] as string;
+    var categories = ViewData["Categories"] as List<string> ?? new List<string>();
 }
 
-<h1>Index</h1>
+<h1>FREQUENTLY ASKED QUESTIONS</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Question)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Answer)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Category)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DisplayOrder)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Question)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Answer)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Category)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DisplayOrder)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.FaqId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.FaqId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.FaqId">Delete</a>
-            </td>
-        </tr>
+<hr />
+
+<!-- Search Bar -->
+<form method="get" asp-action="Index">
+    <input type="hidden" name="category" value="@currentCategory" />
+    <input type="text"
+           name="search"
+           value="@currentSearch"
+           placeholder="Search FAQs..." />
+    <button type="submit">Search</button>
+</form>
+
+<!-- Category Filter Tabs -->
+<div>
+    <a asp-action="Index"
+       asp-route-search="@currentSearch"
+       asp-route-category="">
+        [All]
+    </a>
+
+    @foreach (var cat in categories)
+    {
+        <a asp-action="Index"
+           asp-route-search="@currentSearch"
+           asp-route-category="@cat">
+            [@cat]
+        </a>
+    }
+</div>
+
+<!-- FAQ Accordion -->
+@if (!Model.Any())
+{
+    <p>No FAQs found.</p>
 }
-    </tbody>
-</table>
+else
+{
+    @foreach (var faq in Model)
+    {
+        <details>
+            <summary>@faq.Question</summary>
+            <div>
+                <p>@faq.Answer</p>
+            </div>
+        </details>
+        <hr />
+    }
+}
+
+<!-- Didn't find your answer -->
+<div>
+    <strong>Didn't find your answer?</strong>
+    <p>We're here to help! Contact us via email for fastest response.</p>
+    <a asp-controller="Home" asp-action="Contact">Contact Us</a>
+</div>

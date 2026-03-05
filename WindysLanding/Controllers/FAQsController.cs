@@ -18,10 +18,41 @@ namespace WindysLanding.Controllers
             _context = context;
         }
 
-        // GET: FAQs
-        public async Task<IActionResult> Index()
+        // GET: FAQs (public-facing page with search and category filter)
+        public async Task<IActionResult> Index(string? search, string? category)
         {
-            return View(await _context.FAQs.ToListAsync());
+            var query = _context.FAQs.AsQueryable();
+
+            // Apply search filter
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                query = query.Where(f =>
+                    f.Question.Contains(search) ||
+                    f.Answer.Contains(search));
+            }
+
+            // Apply category filter
+            if (!string.IsNullOrWhiteSpace(category))
+            {
+                query = query.Where(f => f.Category == category);
+            }
+
+            // Order by DisplayOrder
+            query = query.OrderBy(f => f.DisplayOrder);
+
+            // Get distinct categories for the filter tabs
+            var categories = await _context.FAQs
+                .Where(f => f.Category != null)
+                .Select(f => f.Category!)
+                .Distinct()
+                .OrderBy(c => c)
+                .ToListAsync();
+
+            ViewData["CurrentSearch"] = search;
+            ViewData["CurrentCategory"] = category;
+            ViewData["Categories"] = categories;
+
+            return View(await query.ToListAsync());
         }
 
         // GET: FAQs/Details/5
@@ -49,8 +80,6 @@ namespace WindysLanding.Controllers
         }
 
         // POST: FAQs/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("FaqId,Question,Answer,Category,DisplayOrder")] FAQ fAQ)
@@ -81,8 +110,6 @@ namespace WindysLanding.Controllers
         }
 
         // POST: FAQs/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("FaqId,Question,Answer,Category,DisplayOrder")] FAQ fAQ)

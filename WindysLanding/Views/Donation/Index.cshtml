@@ -1,0 +1,313 @@
+﻿@{
+    ViewData["Title"] = "Donate";
+}
+
+@section Styles {
+    <style>
+        :root {
+            --olive: #bdbd86;
+            --brown: #492e16;
+            --cream: #e4dac5;
+            --dark-olive: #4b4215;
+        }
+
+        .donate-page {
+            font-family: 'Georgia', serif;
+            background-color: var(--cream);
+            color: var(--dark);
+        }
+
+        /* Hero */
+        .donate-hero {
+            text-align: center;
+            padding: 3rem 1rem 2rem;
+            border-bottom: 2px solid var(--light-border);
+        }
+
+            .donate-hero h1 {
+                font-size: 2.6rem;
+                font-weight: 700;
+                letter-spacing: 0.04em;
+                text-transform: uppercase;
+                color: var(--earth);
+                margin-bottom: 0.75rem;
+            }
+
+            .donate-hero p {
+                font-size: 1.1rem;
+                color: #6b5744;
+                max-width: 460px;
+                margin: 0 auto;
+                line-height: 1.7;
+            }
+
+        /* Section wrapper */
+        .donate-section {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 2.5rem 1.5rem;
+            border-bottom: 1px solid var(--light-border);
+        }
+
+            .donate-section h2 {
+                text-align: center;
+                font-size: 1.4rem;
+                text-transform: uppercase;
+                letter-spacing: 0.1em;
+                color: var(--earth);
+                margin-bottom: 2rem;
+            }
+
+        /* Where your donation goes - 3 cards */
+        .donation-cards {
+            display: flex;
+            gap: 1.25rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .donation-card {
+            flex: 1;
+            min-width: 180px;
+            max-width: 240px;
+            border: 1px solid var(--light-border);
+            border-radius: 8px;
+            padding: 1.75rem 1rem;
+            text-align: center;
+            background: #fff;
+            box-shadow: 0 2px 6px rgba(92,61,46,0.07);
+        }
+
+            .donation-card img {
+                width: 64px;
+                height: 64px;
+                object-fit: contain;
+                margin-bottom: 0.75rem;
+                display: block;
+                margin-left: auto;
+                margin-right: auto;
+            }
+
+            .donation-card strong {
+                font-size: 1rem;
+                color: var(--earth);
+                display: block;
+            }
+
+        /* Zeffy box */
+        .zeffy-box {
+            border: 2px solid var(--gold);
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-align: center;
+            background: #fff;
+            margin-bottom: 1.25rem;
+        }
+
+            .zeffy-box strong {
+                display: block;
+                font-size: 1.05rem;
+                color: var(--earth);
+                margin-bottom: 1rem;
+            }
+
+        .btn-zeffy {
+            display: inline-block;
+            background-color: #bdbd86;
+            color: #492e16;
+            font-family: 'Georgia', serif;
+            font-size: 1rem;
+            font-weight: 700;
+            padding: 0.65rem 1.75rem;
+            border-radius: 4px;
+            text-decoration: none;
+            letter-spacing: 0.03em;
+            transition: background 0.2s;
+        }
+
+            .btn-zeffy:hover {
+                background-color: #4b4215;
+                color: #fff;
+                text-decoration: none;
+            }
+
+        /* PayPal + Mail a Check side by side */
+        .how-grid {
+            display: flex;
+            gap: 1.25rem;
+            flex-wrap: wrap;
+        }
+
+        .how-card {
+            flex: 1;
+            min-width: 220px;
+            border: 1px solid var(--light-border);
+            border-radius: 8px;
+            padding: 1.25rem 1.5rem;
+            background: #fff;
+        }
+
+            .how-card strong {
+                display: block;
+                font-size: 1rem;
+                color: var(--earth);
+                margin-bottom: 0.5rem;
+            }
+
+            .how-card p,
+            .how-card address {
+                font-size: 0.9rem;
+                color: #6b5744;
+                line-height: 1.6;
+                font-style: normal;
+                margin-bottom: 0.75rem;
+            }
+
+        .btn-secondary {
+            display: inline-block;
+            border: 1px solid var(--earth);
+            color: var(--earth);
+            font-family: 'Georgia', serif;
+            font-size: 0.9rem;
+            padding: 0.45rem 1.2rem;
+            border-radius: 4px;
+            text-decoration: none;
+            transition: background 0.2s, color 0.2s;
+        }
+
+            .btn-secondary:hover {
+                background: var(--earth);
+                color: #fff;
+                text-decoration: none;
+            }
+
+        /* Other ways to help */
+        .other-ways {
+            text-align: center;
+        }
+
+        .other-ways-links {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 1.5rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem 2rem;
+            justify-content: center;
+        }
+
+            .other-ways-links li a {
+                color: var(--sage);
+                font-size: 1rem;
+                text-decoration: none;
+                border-bottom: 1px solid var(--sage);
+                padding-bottom: 1px;
+                transition: color 0.2s;
+            }
+
+                .other-ways-links li a:hover {
+                    color: var(--earth);
+                    border-color: var(--earth);
+                }
+
+        .btn-outline-gold {
+            display: inline-block;
+            border: 2px solid var(--gold);
+            color: var(--gold);
+            font-family: 'Georgia', serif;
+            font-size: 1rem;
+            font-weight: 700;
+            padding: 0.6rem 1.75rem;
+            border-radius: 4px;
+            text-decoration: none;
+            letter-spacing: 0.03em;
+            transition: background 0.2s, color 0.2s;
+        }
+
+            .btn-outline-gold:hover {
+                background: var(--gold);
+                color: #fff;
+                text-decoration: none;
+            }
+    </style>
+}
+
+<div class="donate-page">
+
+    <!-- Hero -->
+    <div class="donate-hero">
+        <h1>Donate &amp; Save a Life</h1>
+        <p>Your donation helps us provide food, shelter, and veterinary care for animals in need.</p>
+    </div>
+
+    <!-- Where Your Donation Goes -->
+    <div class="donate-section">
+        <h2>Where Your Donation Goes</h2>
+        <div class="donation-cards">
+            <div class="donation-card">
+                <img src="~/images/feed-and-care.jpg" alt="Feed and Care" />
+                <strong>Feed &amp; Care</strong>
+            </div>
+            <div class="donation-card">
+                <img src="~/images/veterinary-care.png" alt="Veterinary Care" />
+                <strong>Veterinary Care</strong>
+            </div>
+            <div class="donation-card">
+                <img src="~/images/shelter-facilities.png" alt="Shelter and Facilities" />
+                <strong>Shelter &amp; Facilities</strong>
+            </div>
+        </div>
+    </div>
+
+    <!-- How to Donate -->
+    <div class="donate-section">
+        <h2>How to Donate</h2>
+
+        <!-- Zeffy -->
+        <div class="zeffy-box">
+            <strong>Zeffy (Preferred - No fees!)</strong>
+            <a class="btn-zeffy"
+               href="https://www.zeffy.com/en-US/donation-form/donate-to-save-slaughter-bound-horses"
+               target="_blank">
+                Donate via Zeffy
+            </a>
+        </div>
+
+        <!-- PayPal + Mail -->
+        <div class="how-grid">
+            <div class="how-card">
+                <strong>PayPal / Venmo</strong>
+                <p>
+                    PayPal: donate&#64;windyslanding.org<br />
+                    Venmo: &#64;WindysLanding
+                </p>
+                @* TODO: Replace # with real PayPal link *@
+                <a class="btn-secondary" href="#" target="_blank">Donate via PayPal</a>
+            </div>
+            <div class="how-card">
+                <strong>Mail a Check</strong>
+                <address>
+                    Windy's Landing Animal Rescue<br />
+                    669 N Lake Leelanau Drive<br />
+                    Lake Leelanau, MI 49653
+                </address>
+            </div>
+        </div>
+    </div>
+
+    <!-- Other Ways to Help -->
+    <div class="donate-section other-ways">
+        <h2>Other Ways to Help</h2>
+        <ul class="other-ways-links">
+            @* TODO: Replace # with real Amazon Wishlist link *@
+            <li><a href="#" target="_blank">Amazon Wishlist</a></li>
+            @* TODO: Replace # with real Chewy Wishlist link *@
+            <li><a href="#" target="_blank">Chewy Wishlist</a></li>
+            <li><a asp-controller="VolunteerApplications" asp-action="Index">Volunteer Your Time</a></li>
+            <li><a href="https://www.zeffy.com/en-US/donation-form/donate-to-save-slaughter-bound-horses" target="_blank">Share Our Mission</a></li>
+        </ul>
+        @* TODO: Update once wishlist links are confirmed *@
+        <a class="btn-outline-gold" href="#" target="_blank">View Wishlists</a>
+    </div>
+
+</div>

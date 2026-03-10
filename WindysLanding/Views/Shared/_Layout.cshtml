@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/WindysLanding.styles.css" asp-append-version="true" />
+    @await RenderSectionAsync("Styles", required: false)
 </head>
 <body>
     <header>
@@ -46,6 +47,10 @@
                         <!-- Sponsors -->
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="SponsorCompanies" asp-action="Index">Our Sponsors</a>
+                        </li>
+                        <!-- Donations -->
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Donation" asp-action="Index">Donate</a>
                         </li>
                         <!--FAQ-->
                         <li class="nav-item">

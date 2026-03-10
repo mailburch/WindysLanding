@@ -1,59 +1,119 @@
 @model IEnumerable<WindysLanding.Models.Event>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Events";
 }
 
-<h1>Index</h1>
+<div class="row align-items-center mb-4">
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Description)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Date)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.EventUrl)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.EventImg)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Description)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Date)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.EventUrl)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.EventImg)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.EventId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.EventId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.EventId">Delete</a>
-            </td>
-        </tr>
+    <div class="col-4"></div>
+
+    <div class="col-4 text-center">
+        <h1 class="mb-0">UPCOMING EVENTS</h1>
+    </div>
+
+    <div class="col-4 text-end">
+        @* TODO: Wrap this in Admin authorization when roles are implemented *@
+        @* Example: if (User.IsInRole("Admin")) *@
+        <a asp-action="Create" class="btn btn-primary">Add New Event</a>
+    </div>
+
+</div>
+
+<div class="row">
+    @foreach (var item in Model)
+    {
+        <div class="col-12 mb-4">
+            <div class="card">
+                <div class="row g-0">
+
+                    <div class="col-md-3">
+                        @if (!string.IsNullOrEmpty(item.EventImg))
+                        {
+                            <div class="bg-light d-flex align-items-center justify-content-center rounded-start" style="height:220px;">
+                                <img src="@item.EventImg"
+                                     class="img-fluid"
+                                     alt="@item.Name"
+                                     style="max-height:100%; max-width:100%; object-fit:contain;">
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="bg-secondary d-flex align-items-center justify-content-center"
+                                 style="height:220px;">
+                                <span class="text-white">No Photo</span>
+                            </div>
+                        }
+                    </div>
+
+                    <div class="col-md-9">
+                        <div class="card-body">
+
+                            <h4 class="card-title">@item.Name</h4>
+
+                            <p class="card-text mb-1">
+                                <strong>Date:</strong> @item.Date.ToString("MMMM d, yyyy")
+                            </p>
+
+                            <p class="card-text mb-2">
+                                <strong>Time:</strong> @item.Date.ToString("h:mm tt")
+                            </p>
+
+                            @if (!string.IsNullOrEmpty(item.Description))
+                            {
+                                <p class="card-text">
+                                    @(item.Description.Length > 150
+                                        ? item.Description.Substring(0, 150) + "..."
+                                        : item.Description)
+                                </p>
+                            }
+
+                            @if (!string.IsNullOrEmpty(item.EventUrl))
+                            {
+                                <a href="@item.EventUrl" target="_blank" class="btn btn-sm btn-outline-primary">
+                                    Learn More
+                                </a>
+                            }
+
+                        </div>
+
+                        <div class="card-footer bg-white border-top-0">
+                            <div class="btn-group">
+
+                                <a asp-action="Details" asp-route-id="@item.EventId"
+                                   class="btn btn-sm btn-outline-primary">Details</a>
+
+                                @* TODO: Wrap Edit/Delete in Admin role check *@
+                                @* Example:
+                                   if (User.IsInRole("Admin"))
+                                   {
+                                       ...
+                                   }
+                                *@
+
+                                <a asp-action="Edit" asp-route-id="@item.EventId"
+                                   class="btn btn-sm btn-outline-secondary">Edit</a>
+
+                                <a asp-action="Delete" asp-route-id="@item.EventId"
+                                   class="btn btn-sm btn-outline-danger">Delete</a>
+
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">
+        <p>No events found.</p>
+
+        @* TODO: Admin-only action later *@
+        <p><a asp-action="Create">Add your first event</a></p>
+    </div>
 }
-    </tbody>
-</table>

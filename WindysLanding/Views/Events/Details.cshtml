@@ -1,48 +1,79 @@
 @model WindysLanding.Models.Event
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Event Details";
 }
 
-<h1>Details</h1>
+<div class="row align-items-center mb-4">
+    <div class="col-4"></div>
 
-<div>
-    <h4>Event</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Description)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Description)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Date)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Date)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.EventUrl)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.EventUrl)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.EventImg)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.EventImg)
-        </dd>
-    </dl>
+    <div class="col-4 text-center">
+        <h1 class="mb-0">Event Details</h1>
+    </div>
+
+    <div class="col-4 text-end">
+        @* TODO: Wrap these in Admin authorization when roles are implemented *@
+        <a asp-action="Edit" asp-route-id="@Model?.EventId" class="btn btn-primary me-2">Edit Event</a>
+        <a asp-action="Delete" asp-route-id="@Model?.EventId" class="btn btn-danger">Delete Event</a>
+    </div>
 </div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.EventId">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+
+<div class="card">
+    <div class="row g-0">
+        <div class="col-md-4">
+            @if (!string.IsNullOrEmpty(Model.EventImg))
+            {
+                <div class="bg-light d-flex align-items-center justify-content-center rounded-start"
+                     style="height:320px;">
+                    <img src="@Model.EventImg"
+                         alt="@Model.Name"
+                         class="img-fluid"
+                         style="max-height:100%; max-width:100%; object-fit:contain;" />
+                </div>
+            }
+            else
+            {
+                <div class="bg-secondary d-flex align-items-center justify-content-center rounded-start"
+                     style="height:320px;">
+                    <span class="text-white">No Photo</span>
+                </div>
+            }
+        </div>
+
+        <div class="col-md-8">
+            <div class="card-body">
+                <h2 class="card-title">@Model.Name</h2>
+
+                <p class="card-text mb-2">
+                    <strong>Date:</strong> @Model.Date.ToString("MMMM d, yyyy")
+                </p>
+
+                <p class="card-text mb-2">
+                    <strong>Time:</strong> @Model.Date.ToString("h:mm tt")
+                </p>
+
+                @if (!string.IsNullOrEmpty(Model.Description))
+                {
+                    <p class="card-text">
+                        <strong>Description:</strong><br />
+                        @Model.Description
+                    </p>
+                }
+
+                @if (!string.IsNullOrEmpty(Model.EventUrl))
+                {
+                    <p class="card-text">
+                        <strong>Event Link:</strong><br />
+                        <a href="@Model.EventUrl" target="_blank">@Model.EventUrl</a>
+                    </p>
+                }
+            </div>
+
+            <div class="card-footer bg-white border-top-0">
+                <div class="btn-group" role="group">
+                    <a asp-action="Index" class="btn btn-sm btn-outline-primary">Back to Events</a>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

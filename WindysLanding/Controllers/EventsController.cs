@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using WindysLanding.Models;
+using System.IO;
+using Microsoft.AspNetCore.Http;
 
 namespace WindysLanding.Controllers
 {
@@ -53,14 +55,35 @@ namespace WindysLanding.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("EventId,Name,Description,Date,EventUrl,EventImg")] Event @event)
+        public async Task<IActionResult> Create([Bind("EventId,Name,Description,Date,EventUrl")] Event @event, IFormFile? ImageFile)
         {
             if (ModelState.IsValid)
             {
+                if (ImageFile != null && ImageFile.Length > 0)
+                {
+                    var fileName = Guid.NewGuid().ToString() + Path.GetExtension(ImageFile.FileName);
+                    var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", "events");
+
+                    if (!Directory.Exists(uploadsFolder))
+                    {
+                        Directory.CreateDirectory(uploadsFolder);
+                    }
+
+                    var filePath = Path.Combine(uploadsFolder, fileName);
+
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await ImageFile.CopyToAsync(stream);
+                    }
+
+                    @event.EventImg = "/images/events/" + fileName;
+                }
+
                 _context.Add(@event);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+
             return View(@event);
         }
 
@@ -85,7 +108,11 @@ namespace WindysLanding.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("EventId,Name,Description,Date,EventUrl,EventImg")] Event @event)
+        public async Task<IActionResult> Edit(
+            int id,
+            [Bind("EventId,Name,Description,Date,EventUrl,EventImg")] Event @event,
+            IFormFile? ImageFile,
+            bool RemovePhoto)
         {
             if (id != @event.EventId)
             {
@@ -96,7 +123,42 @@ namespace WindysLanding.Controllers
             {
                 try
                 {
-                    _context.Update(@event);
+                    var existingEvent = await _context.Events.FindAsync(id);
+                    if (existingEvent == null)
+                    {
+                        return NotFound();
+                    }
+
+                    existingEvent.Name = @event.Name;
+                    existingEvent.Description = @event.Description;
+                    existingEvent.Date = @event.Date;
+                    existingEvent.EventUrl = @event.EventUrl;
+
+                    if (RemovePhoto)
+                    {
+                        existingEvent.EventImg = null;
+                    }
+
+                    if (ImageFile != null && ImageFile.Length > 0)
+                    {
+                        var fileName = Guid.NewGuid().ToString() + Path.GetExtension(ImageFile.FileName);
+                        var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", "events");
+
+                        if (!Directory.Exists(uploadsFolder))
+                        {
+                            Directory.CreateDirectory(uploadsFolder);
+                        }
+
+                        var filePath = Path.Combine(uploadsFolder, fileName);
+
+                        using (var stream = new FileStream(filePath, FileMode.Create))
+                        {
+                            await ImageFile.CopyToAsync(stream);
+                        }
+
+                        existingEvent.EventImg = "/images/events/" + fileName;
+                    }
+
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -110,8 +172,10 @@ namespace WindysLanding.Controllers
                         throw;
                     }
                 }
+
                 return RedirectToAction(nameof(Index));
             }
+
             return View(@event);
         }
 

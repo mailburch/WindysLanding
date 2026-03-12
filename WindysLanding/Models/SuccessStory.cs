@@ -29,8 +29,10 @@ namespace WindysLanding.Models
         [Display(Name = "Date Published")]
         public DateTime DatePublished { get; set; } = DateTime.Now;
 
-        // Navigation Properties
         [ForeignKey("AnimalId")]
         public virtual Animal? Animal { get; set; }
+
+        [ForeignKey("PhotoId")]
+        public virtual Photo? Photo { get; set; }
     }
 }

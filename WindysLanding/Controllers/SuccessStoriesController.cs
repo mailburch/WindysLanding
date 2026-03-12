@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -18,14 +14,17 @@ namespace WindysLanding.Controllers
             _context = context;
         }
 
-        // GET: SuccessStories
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.SuccessStories.Include(s => s.Animal);
-            return View(await applicationDbContext.ToListAsync());
+            var stories = await _context.SuccessStories
+                .Include(s => s.Animal)
+                .Include(s => s.Photo)
+                .OrderByDescending(s => s.DatePublished)
+                .ToListAsync();
+
+            return View(stories);
         }
 
-        // GET: SuccessStories/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -35,7 +34,9 @@ namespace WindysLanding.Controllers
 
             var successStory = await _context.SuccessStories
                 .Include(s => s.Animal)
+                .Include(s => s.Photo)
                 .FirstOrDefaultAsync(m => m.StoryId == id);
+
             if (successStory == null)
             {
                 return NotFound();
@@ -44,16 +45,13 @@ namespace WindysLanding.Controllers
             return View(successStory);
         }
 
-        // GET: SuccessStories/Create
         public IActionResult Create()
         {
             ViewData["AnimalId"] = new SelectList(_context.Animals, "AnimalId", "AnimalType");
+            ViewData["PhotoId"] = new SelectList(_context.Photos, "PhotoId", "Caption");
             return View();
         }
 
-        // POST: SuccessStories/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("StoryId,AnimalId,PhotoId,Title,Content,DatePublished")] SuccessStory successStory)
@@ -64,11 +62,12 @@ namespace WindysLanding.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+
             ViewData["AnimalId"] = new SelectList(_context.Animals, "AnimalId", "AnimalType", successStory.AnimalId);
+            ViewData["PhotoId"] = new SelectList(_context.Photos, "PhotoId", "Caption", successStory.PhotoId);
             return View(successStory);
         }
 
-        // GET: SuccessStories/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -81,13 +80,12 @@ namespace WindysLanding.Controllers
             {
                 return NotFound();
             }
+
             ViewData["AnimalId"] = new SelectList(_context.Animals, "AnimalId", "AnimalType", successStory.AnimalId);
+            ViewData["PhotoId"] = new SelectList(_context.Photos, "PhotoId", "Caption", successStory.PhotoId);
             return View(successStory);
         }
 
-        // POST: SuccessStories/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("StoryId,AnimalId,PhotoId,Title,Content,DatePublished")] SuccessStory successStory)
@@ -106,22 +104,22 @@ namespace WindysLanding.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!SuccessStoryExists(successStory.StoryId))
+                    if (!_context.SuccessStories.Any(e => e.StoryId == successStory.StoryId))
                     {
                         return NotFound();
                     }
-                    else
-                    {
-                        throw;
-                    }
+
+                    throw;
                 }
+
                 return RedirectToAction(nameof(Index));
             }
+
             ViewData["AnimalId"] = new SelectList(_context.Animals, "AnimalId", "AnimalType", successStory.AnimalId);
+            ViewData["PhotoId"] = new SelectList(_context.Photos, "PhotoId", "Caption", successStory.PhotoId);
             return View(successStory);
         }
 
-        // GET: SuccessStories/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -131,7 +129,9 @@ namespace WindysLanding.Controllers
 
             var successStory = await _context.SuccessStories
                 .Include(s => s.Animal)
+                .Include(s => s.Photo)
                 .FirstOrDefaultAsync(m => m.StoryId == id);
+
             if (successStory == null)
             {
                 return NotFound();
@@ -140,7 +140,6 @@ namespace WindysLanding.Controllers
             return View(successStory);
         }
 
-        // POST: SuccessStories/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -149,15 +148,10 @@ namespace WindysLanding.Controllers
             if (successStory != null)
             {
                 _context.SuccessStories.Remove(successStory);
+                await _context.SaveChangesAsync();
             }
 
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool SuccessStoryExists(int id)
-        {
-            return _context.SuccessStories.Any(e => e.StoryId == id);
         }
     }
 }

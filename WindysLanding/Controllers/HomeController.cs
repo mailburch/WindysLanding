@@ -35,7 +35,8 @@ namespace WindysLanding.Controllers
         {
             ViewBag.ContactInfo = _context.ContactInfos.FirstOrDefault();
 
-            ModelState.Remove("NewsletterSignup.Email");
+            ModelState.Clear();
+            TryValidateModel(model.ContactForm, nameof(ContactPageViewModel.ContactForm));
 
             if (!ModelState.IsValid)
             {
@@ -59,11 +60,8 @@ namespace WindysLanding.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult NewsletterSignup(ContactPageViewModel model)
         {
-            ModelState.Remove("ContactForm.Name");
-            ModelState.Remove("ContactForm.Email");
-            ModelState.Remove("ContactForm.Message");
-            ModelState.Remove("ContactForm.Phone");
-            ModelState.Remove("ContactForm.Subject");
+            ModelState.Clear();
+            TryValidateModel(model.NewsletterSignup, nameof(ContactPageViewModel.NewsletterSignup));
 
             if (!ModelState.IsValid)
             {

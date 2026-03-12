@@ -4,92 +4,97 @@
     ViewData["Title"] = "Success Stories";
 }
 
-<style>
-    /* Make long text wrap properly */
-    .story-content {
-        word-wrap: break-word;
-        overflow-wrap: break-word;
-        white-space: normal;
-    }
+<section class="page-hero text-center">
+    <div class="container">
+        <h1 class="page-title">Success Stories</h1>
+        <p class="page-subtitle">
+            Meet some of the animals who found loving homes through Windy’s Landing Animal Rescue.
+        </p>
+    </div>
+</section>
 
-    /* Optional: clamp preview to 3 lines for uniform height */
-    .story-content.clamp {
-        display: -webkit-box;
-        -webkit-line-clamp: 3;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-    }
-</style>
+<div class="container py-4">
 
-<h2 class="text-center mt-4">SUCCESS STORIES</h2>
-<p class="text-center">See the happy endings we've helped create</p>
-
-<div class="container mt-4">
-
-    <p>
-        <a asp-action="Create" class="btn btn-primary mb-3">Create New Story</a>
-    </p>
-
-    @foreach (var item in Model)
-    {
-        <div class="row border rounded p-3 mb-4 align-items-center">
-
-            <!-- Story Image -->
-            <div class="col-md-3 text-center">
-                <img src="~/images/@item.PhotoId"
-                     class="img-fluid rounded"
-                     alt="@item.Title"
-                     style="max-height:150px;" />
-            </div>
-
-            <!-- Story Content -->
-            <div class="col-md-6">
-
-                <h4>@item.Title</h4>
-
-                <p class="text-muted">
-                    Adopted: @item.DatePublished.ToString("MMMM yyyy")
-                </p>
-
-                <p class ="story-content clamp">
-                    @(item.Content.Length > 150
-                                    ? item.Content.Substring(0, 150) + "..."
-                                    : item.Content)
-            </p>
-
-                <p>
-                    <strong>Animal:</strong> @item.Animal?.AnimalType
-                </p>
-
-            </div>
-
-            <!-- Read Story Button -->
-            <div class="col-md-2 text-end">
-
-                <a asp-action="Details"
-                   asp-route-id="@item.StoryId"
-                   class="btn btn-outline-primary mb-2">
-                    Read Full Story →
-                </a>
-
-                <div>
-                    <a asp-action="Edit" asp-route-id="@item.StoryId">Edit</a> |
-                    <a asp-action="Delete" asp-route-id="@item.StoryId">Delete</a>
-                </div>
-
-            </div>
-
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
+        <div>
+            <h2 class="section-title mb-1">Happy Endings</h2>
+            <p class="text-muted mb-0">Stories of rescue, recovery, and adoption.</p>
         </div>
+
+        <a asp-action="Create" class="btn btn-primary">Create New Story</a>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="card shadow-sm border-0 p-4 text-center">
+            <h3 class="h5">No success stories yet</h3>
+            <p class="text-muted mb-3">Start by adding the first featured adoption story.</p>
+            <a asp-action="Create" class="btn btn-primary">Add Story</a>
+        </div>
+    }
+    else
+    {
+        @foreach (var item in Model)
+        {
+            var preview = item.Content.Length > 180
+            ? item.Content.Substring(0, 180) + "..."
+            : item.Content;
+
+            var imageUrl = !string.IsNullOrWhiteSpace(item.Photo?.ImgUrl)
+            ? item.Photo.ImgUrl
+            : Url.Content("~/images/placeholder-animal.jpg");
+
+            <div class="card shadow-sm border-0 story-card mb-4">
+                <div class="row g-0 align-items-stretch">
+                    <div class="col-md-4">
+                        <img src="@imageUrl"
+                             class="story-card-img"
+                             alt="@item.Title" />
+                    </div>
+
+                    <div class="col-md-8">
+                        <div class="card-body p-4">
+                            <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-2">
+                                <div>
+                                    <p class="story-meta mb-1">
+                                        Adopted @item.DatePublished.ToString("MMMM yyyy")
+                                    </p>
+                                    <h3 class="story-title mb-2">@item.Title</h3>
+                                </div>
+
+                                <span class="badge bg-light text-dark border">
+                                    @item.Animal?.AnimalType
+                                </span>
+                            </div>
+
+                            <p class="story-preview text-muted mb-4">@preview</p>
+
+                            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+                                <a asp-action="Details"
+                                   asp-route-id="@item.StoryId"
+                                   class="btn btn-outline-primary">
+                                    Read Full Story
+                                </a>
+
+                                <div class="small">
+                                    <a asp-action="Edit" asp-route-id="@item.StoryId" class="me-2">Edit</a>
+                                    <a asp-action="Delete" asp-route-id="@item.StoryId" class="text-danger">Delete</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         }
+    }
 
-</div>
-
-<div class="text-center mt-4">
-    <p>Want to create your own success story?</p>
-
-    <a asp-controller="Animals"
-       asp-action="Index"
-       class="btn btn-secondary">
-        View Available Animals
-    </a>
+    <section class="cta-panel text-center mt-5">
+        <h3 class="mb-2">Ready to meet your future companion?</h3>
+        <p class="text-muted mb-3">
+            Browse available animals and learn more about adoption opportunities.
+        </p>
+        <a asp-controller="Animals" asp-action="Index" class="btn btn-secondary">
+            View Available Animals
+        </a>
+    </section>
 </div>

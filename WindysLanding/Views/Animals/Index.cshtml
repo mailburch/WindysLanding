@@ -4,10 +4,45 @@
 }
 
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <h1>Our Animals</h1>
+    <h1>Manage Animals</h1>
     <a asp-action="Create" class="btn btn-primary">Add New Animal</a>
 </div>
 
+<!-- Filters -->
+<div class="card mb-4">
+    <div class="card-body">
+        <form method="get" class="row g-3">
+            <div class="col-md-3">
+                <label class="form-label">Search</label>
+                <input type="text" name="searchString" value="@ViewBag.SearchString" class="form-control" placeholder="Name or breed..." />
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Type</label>
+                <select name="animalType" class="form-select">
+                    <option value="">All Types</option>
+                    @foreach (var type in ViewBag.AnimalTypes as List<string>)
+                    {
+                        <option value="@type" selected="@(ViewBag.AnimalType == type)">@type</option>
+                    }
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Status</label>
+                <select name="adoptionStatus" class="form-select">
+                    <option value="">All</option>
+                    <option value="false" selected="@(ViewBag.AdoptionStatus == false)">Available</option>
+                    <option value="true" selected="@(ViewBag.AdoptionStatus == true)">Adopted</option>
+                </select>
+            </div>
+            <div class="col-md-3 d-flex align-items-end">
+                <button type="submit" class="btn btn-primary me-2">Filter</button>
+                <a asp-action="Index" class="btn btn-secondary">Clear</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Animals Grid -->
 <div class="row">
     @foreach (var item in Model)
     {
@@ -16,7 +51,6 @@
             <div class="card h-100">
                 @if (item.Photos != null && item.Photos.Any())
                 {
-                    <!-- Carousel for multiple photos -->
                     <div id="@carouselId" class="carousel slide" data-bs-ride="false">
                         <div class="carousel-inner">
                             @{
@@ -28,7 +62,7 @@
                                         <img src="@photo.ImgUrl" class="d-block w-100" alt="@photo.Caption" style="height: 250px; object-fit: cover;">
                                         @if (!string.IsNullOrEmpty(photo.Caption))
                                         {
-                                            <div class="carousel-caption d-none d-md-block" style="background-color: rgba(0,0,0,0.6); border-radius: 5px;">
+                                            <div class="carousel-caption d-none d-md-block">
                                                 <p class="mb-0">@photo.Caption</p>
                                             </div>
                                         }
@@ -40,7 +74,6 @@
 
                         @if (item.Photos.Count() > 1)
                         {
-                            <!-- Carousel controls (only show if more than 1 photo) -->
                             <button class="carousel-control-prev" type="button" data-bs-target="#@carouselId" data-bs-slide="prev">
                                 <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                                 <span class="visually-hidden">Previous</span>
@@ -50,12 +83,11 @@
                                 <span class="visually-hidden">Next</span>
                             </button>
 
-                            <!-- Indicators -->
                             <div class="carousel-indicators">
                                 @for (var i = 0; i < item.Photos.Count(); i++)
                                 {
                                     var activeIndicator = i == 0 ? "active" : "";
-                                    <button type="button" data-bs-target="#@carouselId" data-bs-slide-to="@i" class="@activeIndicator" aria-current="@(i == 0 ? "true" : "false")" aria-label="Slide @(i + 1)"></button>
+                                    <button type="button" data-bs-target="#@carouselId" data-bs-slide-to="@i" class="@activeIndicator" aria-current="@(i == 0 ? "true" : "false")"></button>
                                 }
                             </div>
                         }
@@ -63,9 +95,7 @@
                 }
                 else
                 {
-                    <div class="card-img-top bg-secondary d-flex align-items-center justify-content-center" style="height: 250px;">
-                        <span class="text-white">No Photo</span>
-                    </div>
+                    <img src="/images/placeholder-animal.jpg" class="card-img-top" alt="No photo" style="height: 250px; object-fit: cover;">
                 }
 
                 <div class="card-body">
@@ -73,8 +103,14 @@
                     <p class="card-text">
                         <strong>Type:</strong> @item.AnimalType<br />
                         <strong>Age:</strong> @(item.Age.HasValue? item.Age + " years" : "Unknown")<br />
-                        <strong>Breed:</strong> @(item.Breed ?? "Mixed")<br />
-                        <strong>Gender:</strong> @item.Gender<br />
+                        @if (!string.IsNullOrEmpty(item.Breed))
+                        {
+                            <span><strong>Breed:</strong> @item.Breed<br /></span>
+                        }
+                        @if (!string.IsNullOrEmpty(item.Gender))
+                        {
+                            <span><strong>Gender:</strong> @item.Gender<br /></span>
+                        }
                         <strong>Status:</strong>
                         @if (item.AdoptionStatus)
                         {

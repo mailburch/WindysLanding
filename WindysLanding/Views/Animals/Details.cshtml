@@ -1,90 +1,215 @@
 @model WindysLanding.Models.Animal
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = Model.Name;
 }
 
-<h1>Details</h1>
+<div class="row">
+    <div class="col-md-8">
+        <h1>@Model.Name</h1>
 
-<div>
-    <h4>Animal</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.AnimalType)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.AnimalType)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Age)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Age)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Size)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Size)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Description)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Description)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Gender)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Gender)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Breed)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Breed)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Color)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Color)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Experience)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Experience)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.AdoptionStatus)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.AdoptionStatus)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.SponsorshipAvailable)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.SponsorshipAvailable)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.SponsorshipUrl)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.SponsorshipUrl)
-        </dd>
-    </dl>
+        <!-- Photos Carousel -->
+        @if (Model.Photos != null && Model.Photos.Any())
+        {
+            var carouselId = "carousel-details";
+            <div id="@carouselId" class="carousel slide mb-4" data-bs-ride="false">
+                <div class="carousel-inner">
+                    @{
+                        var photoIndex = 0;
+                        foreach (var photo in Model.Photos)
+                        {
+                            var activeClass = photoIndex == 0 ? "active" : "";
+                            <div class="carousel-item @activeClass">
+                                <img src="@photo.ImgUrl" class="d-block w-100" alt="@Model.Name" style="height: 400px; object-fit: cover;">
+                            </div>
+                            photoIndex++;
+                        }
+                    }
+                </div>
+
+                @if (Model.Photos.Count() > 1)
+                {
+                    <button class="carousel-control-prev" type="button" data-bs-target="#@carouselId" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#@carouselId" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
+                    </button>
+
+                    <div class="carousel-indicators">
+                        @for (var i = 0; i < Model.Photos.Count(); i++)
+                        {
+                            var activeIndicator = i == 0 ? "active" : "";
+                            <button type="button" data-bs-target="#@carouselId" data-bs-slide-to="@i" class="@activeIndicator" aria-current="@(i == 0 ? "true" : "false")"></button>
+                        }
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <img src="/images/placeholder-animal.jpg" class="img-fluid mb-4" alt="No photos" style="width: 100%; height: 400px; object-fit: cover;" />
+        }
+
+        <!-- Animal Info -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <dl class="row mb-0">
+                    <dt class="col-sm-3">Type</dt>
+                    <dd class="col-sm-9">@Model.AnimalType</dd>
+
+                    <dt class="col-sm-3">Age</dt>
+                    <dd class="col-sm-9">@(Model.Age.HasValue? Model.Age + " years" : "Unknown")</dd>
+
+                    @if (!string.IsNullOrEmpty(Model.Gender))
+                    {
+                        <dt class="col-sm-3">Gender</dt>
+                        <dd class="col-sm-9">@Model.Gender</dd>
+                    }
+
+                    @if (!string.IsNullOrEmpty(Model.Breed))
+                    {
+                        <dt class="col-sm-3">Breed</dt>
+                        <dd class="col-sm-9">@Model.Breed</dd>
+                    }
+
+                    @if (!string.IsNullOrEmpty(Model.Size))
+                    {
+                        <dt class="col-sm-3">Size</dt>
+                        <dd class="col-sm-9">@Model.Size</dd>
+                    }
+
+                    @if (!string.IsNullOrEmpty(Model.Color))
+                    {
+                        <dt class="col-sm-3">Color</dt>
+                        <dd class="col-sm-9">@Model.Color</dd>
+                    }
+
+                    <dt class="col-sm-3">Status</dt>
+                    <dd class="col-sm-9">
+                        @if (Model.AdoptionStatus)
+                        {
+                            <span class="badge bg-success">Adopted</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-primary">Available for Adoption</span>
+                        }
+                    </dd>
+
+                    @if (!string.IsNullOrEmpty(Model.Experience))
+                    {
+                        <dt class="col-sm-3">Experience Level</dt>
+                        <dd class="col-sm-9">@Model.Experience</dd>
+                    }
+                </dl>
+            </div>
+        </div>
+
+        <!-- Description -->
+        @if (!string.IsNullOrEmpty(Model.Description))
+        {
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h4 class="mb-0">About @Model.Name</h4>
+                </div>
+                <div class="card-body">
+                    <p style="white-space: pre-line;">@Model.Description</p>
+                </div>
+            </div>
+        }
+    </div>
+
+    <div class="col-md-4">
+        <!-- Adoption Inquiry Form -->
+        @if (!Model.AdoptionStatus)
+        {
+            <div class="card mb-3">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Interested in Adopting @Model.Name?</h5>
+                </div>
+                <div class="card-body">
+                    <form action="mailto:contact@windyslanding.org" method="get" enctype="text/plain">
+                        <input type="hidden" name="subject" value="Adoption Inquiry: @Model.Name" />
+
+                        <div class="mb-3">
+                            <label class="form-label">Your Name</label>
+                            <input type="text" name="name" class="form-control" required />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Your Email</label>
+                            <input type="email" name="email" class="form-control" required />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Phone Number</label>
+                            <input type="tel" name="phone" class="form-control" required />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Message</label>
+                            <textarea name="body" class="form-control" rows="4" placeholder="Tell us why you'd like to adopt @Model.Name..."></textarea>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100">Send Inquiry</button>
+                    </form>
+
+                    <hr />
+
+                    <p class="mb-0 small">
+                        <strong>Or contact us directly:</strong><br />
+                        Phone: (231) 555-1234<br />
+                        Email: contact@windyslanding.org
+                    </p>
+                </div>
+            </div>
+
+            @if (Model.SponsorshipAvailable)
+            {
+                <div class="card mb-3">
+                    <div class="card-header">
+                        <h5 class="mb-0">Sponsorship Available</h5>
+                    </div>
+                    <div class="card-body">
+                        @if (!string.IsNullOrEmpty(Model.SponsorshipUrl))
+                        {
+                            <a href="@Model.SponsorshipUrl" target="_blank" class="btn btn-outline-primary w-100">Sponsor @Model.Name</a>
+                        }
+                        else
+                        {
+                            <p class="mb-0">Contact us to sponsor @Model.Name monthly</p>
+                        }
+                    </div>
+                </div>
+            }
+        }
+
+        <!-- Adoption Process -->
+        @if (!Model.AdoptionStatus)
+        {
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Adoption Process</h5>
+                </div>
+                <div class="card-body">
+                    <ol class="ps-3 mb-0">
+                        <li>Submit inquiry form</li>
+                        <li>Schedule a visit</li>
+                        <li>Complete application</li>
+                        <li>Home visit</li>
+                        <li>Take them home!</li>
+                    </ol>
+                </div>
+            </div>
+        }
+    </div>
 </div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.AnimalId">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+
+<div class="mt-3">
+    <a asp-action="Edit" asp-route-id="@Model.AnimalId" class="btn btn-secondary">Edit</a>
+    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+    <a asp-action="Adoption" class="btn btn-primary">View All Available Animals</a>
 </div>

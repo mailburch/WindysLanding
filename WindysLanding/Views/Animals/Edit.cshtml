@@ -1,89 +1,217 @@
 @model WindysLanding.Models.Animal
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Edit Animal";
 }
 
-<h1>Edit</h1>
+<h1>Edit: @Model.Name</h1>
 
-<h4>Animal</h4>
-<hr />
 <div class="row">
+    <div class="col-md-8">
+        <!-- Animal Information Form -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h4 class="mb-0">Animal Information</h4>
+            </div>
+            <div class="card-body">
+                <form asp-action="Edit" method="post">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <input type="hidden" asp-for="AnimalId" />
+
+                    <div class="form-group mb-3">
+                        <label asp-for="Name" class="control-label"></label>
+                        <input asp-for="Name" class="form-control" />
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label asp-for="AnimalType" class="control-label"></label>
+                                <input asp-for="AnimalType" class="form-control" />
+                                <span asp-validation-for="AnimalType" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label asp-for="Age" class="control-label"></label>
+                                <input asp-for="Age" class="form-control" />
+                                <span asp-validation-for="Age" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label asp-for="Gender" class="control-label"></label>
+                                <input asp-for="Gender" class="form-control" />
+                                <span asp-validation-for="Gender" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label asp-for="Breed" class="control-label"></label>
+                                <input asp-for="Breed" class="form-control" />
+                                <span asp-validation-for="Breed" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label asp-for="Size" class="control-label"></label>
+                                <input asp-for="Size" class="form-control" />
+                                <span asp-validation-for="Size" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label asp-for="Color" class="control-label"></label>
+                                <input asp-for="Color" class="form-control" />
+                                <span asp-validation-for="Color" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label asp-for="Description" class="control-label"></label>
+                        <textarea asp-for="Description" class="form-control" rows="4"></textarea>
+                        <span asp-validation-for="Description" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label asp-for="Experience" class="control-label"></label>
+                        <textarea asp-for="Experience" class="form-control"></textarea>
+                        <span asp-validation-for="Experience" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-check mb-2">
+                        <input class="form-check-input" asp-for="AdoptionStatus" />
+                        <label class="form-check-label" asp-for="AdoptionStatus">Mark as Adopted</label>
+                    </div>
+
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" asp-for="SponsorshipAvailable" />
+                        <label class="form-check-label" asp-for="SponsorshipAvailable">Available for Sponsorship</label>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label asp-for="SponsorshipUrl" class="control-label"></label>
+                        <input asp-for="SponsorshipUrl" class="form-control" />
+                        <span asp-validation-for="SponsorshipUrl" class="text-danger"></span>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="AnimalId" />
-            <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
+        <!-- Photo Management -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h4 class="mb-0">Photos</h4>
             </div>
-            <div class="form-group">
-                <label asp-for="AnimalType" class="control-label"></label>
-                <input asp-for="AnimalType" class="form-control" />
-                <span asp-validation-for="AnimalType" class="text-danger"></span>
+            <div class="card-body">
+                @if (Model.Photos != null && Model.Photos.Any())
+                {
+                    <!-- Photo Carousel -->
+                    var carouselId = "edit-carousel";
+                    <div id="@carouselId" class="carousel slide mb-3" data-bs-ride="false">
+                        <div class="carousel-inner">
+                            @{
+                                var photoIndex = 0;
+                                foreach (var photo in Model.Photos)
+                                {
+                                    var activeClass = photoIndex == 0 ? "active" : "";
+                                    <div class="carousel-item @activeClass">
+                                        <img src="@photo.ImgUrl" class="d-block w-100" alt="@Model.Name" style="height: 250px; object-fit: cover;">
+                                    </div>
+                                    photoIndex++;
+                                }
+                            }
+                        </div>
+
+                        @if (Model.Photos.Count() > 1)
+                        {
+                            <button class="carousel-control-prev" type="button" data-bs-target="#@carouselId" data-bs-slide="prev">
+                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Previous</span>
+                            </button>
+                            <button class="carousel-control-next" type="button" data-bs-target="#@carouselId" data-bs-slide="next">
+                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Next</span>
+                            </button>
+
+                            <div class="carousel-indicators">
+                                @for (var i = 0; i < Model.Photos.Count(); i++)
+                                {
+                                    var activeIndicator = i == 0 ? "active" : "";
+                                    <button type="button" data-bs-target="#@carouselId" data-bs-slide-to="@i" class="@activeIndicator" aria-current="@(i == 0 ? "true" : "false")"></button>
+                                }
+                            </div>
+                        }
+                    </div>
+
+                    <!-- Individual Photo Management -->
+                    <h6>Manage Photos</h6>
+                    <div class="mb-3" style="max-height: 300px; overflow-y: auto;">
+                        @foreach (var photo in Model.Photos)
+                        {
+                            <div class="mb-2 border p-2 d-flex align-items-center">
+                                <img src="@photo.ImgUrl" alt="@Model.Name" style="width:60px; height:60px; object-fit:cover; margin-right:10px;" />
+                                <form asp-action="DeletePhoto" asp-route-id="@photo.PhotoId" method="post" class="flex-grow-1">
+                                    <button type="submit" class="btn btn-danger btn-sm w-100" onclick="return confirm('Delete this photo?');">Delete</button>
+                                </form>
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <div class="text-center py-4">
+                        <img src="/images/placeholder-animal.jpg" alt="No photos" class="img-fluid mb-2" style="max-height: 250px;" />
+                        <p class="text-muted">No photos yet</p>
+                    </div>
+                }
+
+                <hr />
+
+                <!-- Add Photos Form -->
+                <form asp-action="Edit" method="post" enctype="multipart/form-data">
+                    <input type="hidden" asp-for="AnimalId" />
+                    <input type="hidden" asp-for="Name" />
+                    <input type="hidden" asp-for="AnimalType" />
+                    <input type="hidden" asp-for="Age" />
+                    <input type="hidden" asp-for="Size" />
+                    <input type="hidden" asp-for="Description" />
+                    <input type="hidden" asp-for="Gender" />
+                    <input type="hidden" asp-for="Breed" />
+                    <input type="hidden" asp-for="Color" />
+                    <input type="hidden" asp-for="Experience" />
+                    <input type="hidden" asp-for="AdoptionStatus" />
+                    <input type="hidden" asp-for="SponsorshipAvailable" />
+                    <input type="hidden" asp-for="SponsorshipUrl" />
+
+                    <div class="mb-3">
+                        <label class="form-label"><strong>Add New Photos</strong></label>
+                        <input type="file" name="photos" multiple accept="image/*" class="form-control" required />
+                        <small class="text-muted">Select one or more photos</small>
+                    </div>
+
+                    <button type="submit" class="btn btn-success w-100">Upload Photos</button>
+                </form>
             </div>
-            <div class="form-group">
-                <label asp-for="Age" class="control-label"></label>
-                <input asp-for="Age" class="form-control" />
-                <span asp-validation-for="Age" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Size" class="control-label"></label>
-                <input asp-for="Size" class="form-control" />
-                <span asp-validation-for="Size" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Description" class="control-label"></label>
-                <input asp-for="Description" class="form-control" />
-                <span asp-validation-for="Description" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Gender" class="control-label"></label>
-                <input asp-for="Gender" class="form-control" />
-                <span asp-validation-for="Gender" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Breed" class="control-label"></label>
-                <input asp-for="Breed" class="form-control" />
-                <span asp-validation-for="Breed" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Color" class="control-label"></label>
-                <input asp-for="Color" class="form-control" />
-                <span asp-validation-for="Color" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Experience" class="control-label"></label>
-                <input asp-for="Experience" class="form-control" />
-                <span asp-validation-for="Experience" class="text-danger"></span>
-            </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="AdoptionStatus" /> @Html.DisplayNameFor(model => model.AdoptionStatus)
-                </label>
-            </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="SponsorshipAvailable" /> @Html.DisplayNameFor(model => model.SponsorshipAvailable)
-                </label>
-            </div>
-            <div class="form-group">
-                <label asp-for="SponsorshipUrl" class="control-label"></label>
-                <input asp-for="SponsorshipUrl" class="form-control" />
-                <span asp-validation-for="SponsorshipUrl" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
+        </div>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

@@ -1,0 +1,142 @@
+﻿@model IEnumerable<WindysLanding.Models.Animal>
+@{
+    ViewData["Title"] = "Available for Adoption";
+}
+
+<h1>Animals Available for Adoption</h1>
+
+<!-- Filters -->
+<div class="card mb-4">
+    <div class="card-body">
+        <form method="get" class="row g-3">
+            <div class="col-md-4">
+                <label class="form-label">Search</label>
+                <input type="text" name="searchString" value="@ViewBag.SearchString" class="form-control" placeholder="Name or breed..." />
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Animal Type</label>
+                <select name="animalType" class="form-select">
+                    <option value="">All Types</option>
+                    @foreach (var type in ViewBag.AnimalTypes as List<string>)
+                    {
+                        <option value="@type" selected="@(ViewBag.AnimalType == type)">@type</option>
+                    }
+                </select>
+            </div>
+            <div class="col-md-4 d-flex align-items-end">
+                <button type="submit" class="btn btn-primary me-2">Filter</button>
+                <a asp-action="Adoption" class="btn btn-secondary">Clear</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Animals -->
+@if (Model.Any())
+{
+    <div class="row">
+        @foreach (var item in Model)
+        {
+            var carouselId = "carousel-" + item.AnimalId;
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    @if (item.Photos != null && item.Photos.Any())
+                    {
+                        <div id="@carouselId" class="carousel slide" data-bs-ride="false">
+                            <div class="carousel-inner">
+                                @{
+                                    var photoIndex = 0;
+                                    foreach (var photo in item.Photos)
+                                    {
+                                        var activeClass = photoIndex == 0 ? "active" : "";
+                                        <div class="carousel-item @activeClass">
+                                            <img src="@photo.ImgUrl" class="d-block w-100" alt="@item.Name" style="height: 250px; object-fit: cover;">
+                                        </div>
+                                        photoIndex++;
+                                    }
+                                }
+                            </div>
+
+                            @if (item.Photos.Count() > 1)
+                            {
+                                <button class="carousel-control-prev" type="button" data-bs-target="#@carouselId" data-bs-slide="prev">
+                                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                    <span class="visually-hidden">Previous</span>
+                                </button>
+                                <button class="carousel-control-next" type="button" data-bs-target="#@carouselId" data-bs-slide="next">
+                                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                    <span class="visually-hidden">Next</span>
+                                </button>
+
+                                <div class="carousel-indicators">
+                                    @for (var i = 0; i < item.Photos.Count(); i++)
+                                    {
+                                        var activeIndicator = i == 0 ? "active" : "";
+                                        <button type="button" data-bs-target="#@carouselId" data-bs-slide-to="@i" class="@activeIndicator" aria-current="@(i == 0 ? "true" : "false")"></button>
+                                    }
+                                </div>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <img src="/images/placeholder-animal.jpg" class="card-img-top" alt="No photo" style="height: 250px; object-fit: cover;">
+                    }
+
+                    <div class="card-body">
+                        <h5 class="card-title">@item.Name</h5>
+                        <p class="card-text">
+                            <strong>Type:</strong> @item.AnimalType<br />
+                            <strong>Age:</strong> @(item.Age.HasValue? item.Age + " years" : "Unknown")<br />
+                            @if (!string.IsNullOrEmpty(item.Gender))
+                            {
+                                <span><strong>Gender:</strong> @item.Gender<br /></span>
+                            }
+                            @if (!string.IsNullOrEmpty(item.Breed))
+                            {
+                                <span><strong>Breed:</strong> @item.Breed<br /></span>
+                            }
+                        </p>
+
+                        @if (!string.IsNullOrEmpty(item.Description))
+                        {
+                            <p class="card-text">
+                                <small>@(item.Description.Length > 100 ? item.Description.Substring(0, 100) + "..." : item.Description)</small>
+                            </p>
+                        }
+                    </div>
+
+                    <div class="card-footer">
+                        <a asp-action="Details" asp-route-id="@item.AnimalId" class="btn btn-primary w-100">Learn More</a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+else
+{
+    <div class="alert alert-info">
+        <p>No animals currently available for adoption matching your search.</p>
+    </div>
+}
+
+<!-- Adoption Info -->
+<div class="card mt-4">
+    <div class="card-body">
+        <h4>Adoption Process</h4>
+        <ol>
+            <li>Browse available animals and find your perfect match</li>
+            <li>Contact us to schedule a visit</li>
+            <li>Complete adoption application</li>
+            <li>Home visit and approval</li>
+            <li>Take your new companion home!</li>
+        </ol>
+
+        <h5>Contact Us</h5>
+        <p>
+            <strong>Email:</strong> <a href="mailto:contact@windyslanding.org">contact@windyslanding.org</a><br />
+            <strong>Phone:</strong> (231) 555-1234
+        </p>
+    </div>
+</div>

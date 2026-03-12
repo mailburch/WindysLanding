@@ -1,88 +1,169 @@
 @model WindysLanding.Models.Animal
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Create Animal";
 }
 
-<h1>Create</h1>
+<h1>Add New Animal</h1>
 
-<h4>Animal</h4>
 <hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="AnimalType" class="control-label"></label>
-                <input asp-for="AnimalType" class="form-control" />
-                <span asp-validation-for="AnimalType" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Age" class="control-label"></label>
-                <input asp-for="Age" class="form-control" />
-                <span asp-validation-for="Age" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Size" class="control-label"></label>
-                <input asp-for="Size" class="form-control" />
-                <span asp-validation-for="Size" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Description" class="control-label"></label>
-                <input asp-for="Description" class="form-control" />
-                <span asp-validation-for="Description" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Gender" class="control-label"></label>
-                <input asp-for="Gender" class="form-control" />
-                <span asp-validation-for="Gender" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Breed" class="control-label"></label>
-                <input asp-for="Breed" class="form-control" />
-                <span asp-validation-for="Breed" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Color" class="control-label"></label>
-                <input asp-for="Color" class="form-control" />
-                <span asp-validation-for="Color" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Experience" class="control-label"></label>
-                <input asp-for="Experience" class="form-control" />
-                <span asp-validation-for="Experience" class="text-danger"></span>
-            </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="AdoptionStatus" /> @Html.DisplayNameFor(model => model.AdoptionStatus)
-                </label>
-            </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="SponsorshipAvailable" /> @Html.DisplayNameFor(model => model.SponsorshipAvailable)
-                </label>
-            </div>
-            <div class="form-group">
-                <label asp-for="SponsorshipUrl" class="control-label"></label>
-                <input asp-for="SponsorshipUrl" class="form-control" />
-                <span asp-validation-for="SponsorshipUrl" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
-    </div>
-</div>
+<form asp-action="Create" method="post" enctype="multipart/form-data">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+    <div class="form-group">
+        <label asp-for="Name" class="control-label"></label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="AnimalType" class="control-label"></label>
+        <input asp-for="AnimalType" class="form-control" />
+        <span asp-validation-for="AnimalType" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Age" class="control-label"></label>
+        <input asp-for="Age" class="form-control" />
+        <span asp-validation-for="Age" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Size" class="control-label"></label>
+        <input asp-for="Size" class="form-control" />
+        <span asp-validation-for="Size" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Description" class="control-label"></label>
+        <textarea asp-for="Description" class="form-control" rows="4"></textarea>
+        <span asp-validation-for="Description" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Gender" class="control-label"></label>
+        <input asp-for="Gender" class="form-control" />
+        <span asp-validation-for="Gender" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Breed" class="control-label"></label>
+        <input asp-for="Breed" class="form-control" />
+        <span asp-validation-for="Breed" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Color" class="control-label"></label>
+        <input asp-for="Color" class="form-control" />
+        <span asp-validation-for="Color" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Experience" class="control-label"></label>
+        <textarea asp-for="Experience" class="form-control"></textarea>
+        <span asp-validation-for="Experience" class="text-danger"></span>
+    </div>
+
+    <hr />
+
+    <h4>Photos</h4>
+    <div class="card mb-3">
+        <div class="card-body">
+            <div class="mb-3">
+                <label class="form-label"><strong>Upload Photos</strong></label>
+                <input type="file" name="photos" multiple accept="image/*" class="form-control" id="photoInput" />
+                <small class="text-muted">Select one or more photos (hold Ctrl/Cmd to select multiple). Max 10MB per photo.</small>
+            </div>
+
+            <div id="photoPreview" class="row g-2"></div>
+        </div>
+    </div>
+
+    <hr />
+
+    <h4>Status & Sponsorship</h4>
+
+    <div class="form-check mb-2">
+        <input class="form-check-input" asp-for="AdoptionStatus" />
+        <label class="form-check-label" asp-for="AdoptionStatus">Already Adopted</label>
+    </div>
+
+    <div class="form-check mb-3">
+        <input class="form-check-input" asp-for="SponsorshipAvailable" checked />
+        <label class="form-check-label" asp-for="SponsorshipAvailable">Available for Sponsorship</label>
+    </div>
+
+    <div class="form-group mb-4">
+        <label asp-for="SponsorshipUrl" class="control-label"></label>
+        <input asp-for="SponsorshipUrl" class="form-control" placeholder="https://..." />
+        <span asp-validation-for="SponsorshipUrl" class="text-danger"></span>
+        <small class="text-muted">Optional: Link to sponsorship payment page</small>
+    </div>
+
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary btn-lg">Create Animal</button>
+        <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+    </div>
+</form>
+
+<script>
+    // Photo preview with removal
+    let selectedFiles = [];
+
+    document.getElementById('photoInput').addEventListener('change', function(e) {
+        selectedFiles = Array.from(e.target.files);
+        updatePhotoPreview();
+    });
+
+    function updatePhotoPreview() {
+        const preview = document.getElementById('photoPreview');
+        preview.innerHTML = '';
+
+        if (selectedFiles.length > 0) {
+            selectedFiles.forEach((file, index) => {
+                const reader = new FileReader();
+
+                reader.onload = function(e) {
+                    const col = document.createElement('div');
+                    col.className = 'col-md-3';
+                    col.innerHTML = `
+                        <div class="border p-2 position-relative">
+                            <button type="button" class="btn btn-danger btn-sm position-absolute top-0 end-0 m-1"
+                                    onclick="removePhoto(${index})" style="z-index: 10;">
+                                <small>×</small>
+                            </button>
+                            <img src="${e.target.result}" class="img-fluid" style="height: 150px; width: 100%; object-fit: cover;" />
+                            <small class="d-block text-center mt-1">${file.name}</small>
+                        </div>
+                    `;
+                    preview.appendChild(col);
+                }
+
+                reader.readAsDataURL(file);
+            });
+        }
+    }
+
+    function removePhoto(index) {
+        selectedFiles.splice(index, 1);
+        updateFileInput();
+        updatePhotoPreview();
+    }
+
+    function updateFileInput() {
+        const input = document.getElementById('photoInput');
+        const dataTransfer = new DataTransfer();
+
+        selectedFiles.forEach(file => {
+            dataTransfer.items.add(file);
+        });
+
+        input.files = dataTransfer.files;
+    }
+</script>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

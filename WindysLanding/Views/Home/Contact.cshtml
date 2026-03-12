@@ -1,0 +1,219 @@
+﻿@model WindysLanding.Models.ContactPageViewModel
+@{
+    ViewData["Title"] = "Contact";
+    var contact = ViewBag.ContactInfo as WindysLanding.Models.ContactInfo;
+}
+
+<div class="container mt-4">
+
+    <!-- PAGE TITLE -->
+    <div class="text-center mb-4">
+
+        <h1 class="display-5">Contact Us</h1>
+
+        <p class="lead">
+            Questions about adoption, volunteering, donations, or sponsorship?
+            We're happy to help!
+        </p>
+
+    </div>
+
+
+    <!-- SUCCESS MESSAGE -->
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success text-center">
+            @TempData["SuccessMessage"]
+        </div>
+    }
+
+
+    <div class="row justify-content-center">
+
+        <div class="col-lg-10">
+
+            <div class="row">
+
+                <!-- LEFT SIDE -->
+                <div class="col-md-5">
+
+                    <div class="card shadow-sm p-4 mb-4">
+
+                        <h3 class="text-center mb-3">Contact Information</h3>
+
+                        <p class="text-center">
+                            <strong>Phone</strong><br />
+                            @contact?.Phone
+                        </p>
+
+                        <p class="text-center">
+                            <strong>Email</strong><br />
+                            @contact?.Email
+                        </p>
+
+                        <p class="text-center">
+                            <strong>Address</strong><br />
+                            @contact?.Address
+                        </p>
+
+                    </div>
+
+
+                    <!-- NEWSLETTER SIGNUP -->
+                    <div class="card shadow-sm p-4">
+
+                        <h4 class="text-center mb-3">Newsletter Sign Up</h4>
+
+                        <p class="text-center">
+                            Get updates about rescue news, events, and success stories.
+                        </p>
+
+                        @if (TempData["NewsletterSuccess"] != null)
+                        {
+                            <div class="alert alert-success text-center">
+                                @TempData["NewsletterSuccess"]
+                            </div>
+                        }
+
+                        @if (TempData["NewsletterError"] != null)
+                        {
+                            <div class="alert alert-danger text-center">
+                                @TempData["NewsletterError"]
+                            </div>
+                        }
+
+                        <form asp-controller="Home" asp-action="NewsletterSignup" method="post">
+
+                            @Html.AntiForgeryToken()
+
+                            <div class="mb-3">
+
+                                <input asp-for="NewsletterSignup.Email"
+                                       class="form-control"
+                                       placeholder="Enter your email" />
+
+                                <span asp-validation-for="NewsletterSignup.Email"
+                                      class="text-danger"></span>
+
+                            </div>
+
+                            <div class="text-center">
+
+                                <button type="submit" class="btn btn-primary">
+                                    Sign Up
+                                </button>
+
+                            </div>
+
+                        </form>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- RIGHT SIDE -->
+                <div class="col-md-7">
+
+                    <div class="card shadow-sm p-4">
+
+                        <h3 class="text-center mb-3">Send Us a Message</h3>
+
+                        <form asp-controller="Home" asp-action="Contact" method="post">
+
+                            @Html.AntiForgeryToken()
+
+                            <div asp-validation-summary="All" class="text-danger"></div>
+
+                            <div class="mb-3">
+
+                                <label asp-for="ContactForm.Name" class="form-label"></label>
+
+                                <input asp-for="ContactForm.Name" class="form-control" />
+
+                                <span asp-validation-for="ContactForm.Name"
+                                      class="text-danger"></span>
+
+                            </div>
+
+
+                            <div class="mb-3">
+
+                                <label asp-for="ContactForm.Phone" class="form-label"></label>
+
+                                <input asp-for="ContactForm.Phone" class="form-control" />
+
+                                <span asp-validation-for="ContactForm.Phone"
+                                      class="text-danger"></span>
+
+                            </div>
+
+
+                            <div class="mb-3">
+
+                                <label asp-for="ContactForm.Email" class="form-label"></label>
+
+                                <input asp-for="ContactForm.Email" class="form-control" />
+
+                                <span asp-validation-for="ContactForm.Email"
+                                      class="text-danger"></span>
+
+                            </div>
+
+
+                            <div class="mb-3">
+
+                                <label asp-for="ContactForm.Subject" class="form-label"></label>
+
+                                <input asp-for="ContactForm.Subject" class="form-control" />
+
+                                <span asp-validation-for="ContactForm.Subject"
+                                      class="text-danger"></span>
+
+                            </div>
+
+
+                            <div class="mb-3">
+
+                                <label asp-for="ContactForm.Message" class="form-label"></label>
+
+                                <textarea asp-for="ContactForm.Message"
+                                          class="form-control"
+                                          rows="5"></textarea>
+
+                                <span asp-validation-for="ContactForm.Message"
+                                      class="text-danger"></span>
+
+                            </div>
+
+
+                            <div class="text-center">
+
+                                <button type="submit" class="btn btn-success">
+                                    Send Message
+                                </button>
+
+                            </div>
+
+                        </form>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+@section Scripts
+{
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

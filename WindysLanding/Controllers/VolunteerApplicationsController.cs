@@ -81,8 +81,10 @@ namespace WindysLanding.Controllers
                 _context.Add(volunteerApplication);
                 await _context.SaveChangesAsync();
 
-                // TODO: Redirect to a ThankYou page instead of Index 
-                return RedirectToAction(nameof(Index));
+                ViewBag.Title = "Thank You for Volunteering!";
+                ViewBag.Message = "Your volunteer application has been submitted successfully. Our team will review it and contact you soon.";
+
+                return View("~/Views/Shared/ThankYou.cshtml");
             }
 
             return View(volunteerApplication);

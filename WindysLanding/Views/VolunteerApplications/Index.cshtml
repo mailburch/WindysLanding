@@ -1,71 +1,108 @@
 @model IEnumerable<WindysLanding.Models.VolunteerApplication>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Volunteer Applications";
 }
 
-<h1>Index</h1>
+@* TODO: This page should only be accessible to Admin users once authentication is implemented *@
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Email)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Phone)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.VolunteerDescription)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ApplicationDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.WaiverSigned)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.WaiverSignedDate)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Email)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Phone)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.VolunteerDescription)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ApplicationDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.WaiverSigned)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.WaiverSignedDate)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.ApplicationId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.ApplicationId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.ApplicationId">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+<div class="row justify-content-center">
+    <div class="col-lg-10">
+
+        <div class="row align-items-center mb-4">
+
+            <div class="col-4"></div>
+
+            <div class="col-4 text-center">
+                <h1 class="mb-0">Volunteer Applications</h1>
+            </div>
+
+        </div>
+
+        <div class="card">
+            <div class="card-body p-0">
+
+                <table class="table table-striped table-hover mb-0">
+
+                    <thead class="table-light">
+                        <tr>
+                            <th>@Html.DisplayNameFor(model => model.Name)</th>
+                            <th>@Html.DisplayNameFor(model => model.Email)</th>
+                            <th>@Html.DisplayNameFor(model => model.Phone)</th>
+                            <th>@Html.DisplayNameFor(model => model.ApplicationDate)</th>
+                            <th>@Html.DisplayNameFor(model => model.WaiverSigned)</th>
+                            <th>@Html.DisplayNameFor(model => model.WaiverSignedDate)</th>
+                            <th class="text-end">Actions</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+
+                                <td>@item.Name</td>
+
+                                <td>@item.Email</td>
+
+                                <td>@item.Phone</td>
+
+                                <td>@item.ApplicationDate.ToString("MMM d, yyyy")</td>
+
+                                <td>
+                                    @if (item.WaiverSigned)
+                                    {
+                                        <span class="badge bg-success">Yes</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-secondary">No</span>
+                                    }
+                                </td>
+
+                                <td>
+                                    @(item.WaiverSignedDate?.ToString("MMM d, yyyy") ?? "-")
+                                </td>
+
+                                <td class="text-end">
+
+                                    @* TODO: Restrict these actions to Admin role *@
+
+                                    <a asp-action="Details"
+                                       asp-route-id="@item.ApplicationId"
+                                       class="btn btn-sm btn-outline-primary">
+                                        Details
+                                    </a>
+
+                                    <a asp-action="Edit"
+                                       asp-route-id="@item.ApplicationId"
+                                       class="btn btn-sm btn-outline-secondary">
+                                        Edit
+                                    </a>
+
+                                    <a asp-action="Delete"
+                                       asp-route-id="@item.ApplicationId"
+                                       class="btn btn-sm btn-outline-danger">
+                                        Delete
+                                    </a>
+
+                                </td>
+
+                            </tr>
+                        }
+                    </tbody>
+
+                </table>
+
+            </div>
+        </div>
+
+        @if (!Model.Any())
+        {
+            <div class="alert alert-info mt-3 text-center">
+                No volunteer applications have been submitted yet.
+            </div>
+        }
+
+    </div>
+</div>

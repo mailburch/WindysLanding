@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using WindysLanding.Models;
 using System.IO;
@@ -23,7 +22,9 @@ namespace WindysLanding.Controllers
         // GET: Events
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Events.ToListAsync());
+            return View(await _context.Events
+                .Include(e => e.Photos)
+                .ToListAsync());
         }
 
         // GET: Events/Details/5
@@ -35,7 +36,9 @@ namespace WindysLanding.Controllers
             }
 
             var @event = await _context.Events
+                .Include(e => e.Photos)
                 .FirstOrDefaultAsync(m => m.EventId == id);
+
             if (@event == null)
             {
                 return NotFound();
@@ -51,17 +54,27 @@ namespace WindysLanding.Controllers
         }
 
         // POST: Events/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("EventId,Name,Description,Date,EventUrl")] Event @event, IFormFile? ImageFile)
         {
+            if (ImageFile != null && ImageFile.Length > 0)
+            {
+                var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif", ".webp" };
+                var extension = Path.GetExtension(ImageFile.FileName).ToLowerInvariant();
+
+                if (!allowedExtensions.Contains(extension))
+                {
+                    ModelState.AddModelError("ImageFile", "Only image files (JPG, PNG, GIF, WEBP) are allowed");
+                }
+            }
+
             if (ModelState.IsValid)
             {
                 if (ImageFile != null && ImageFile.Length > 0)
                 {
-                    var fileName = Guid.NewGuid().ToString() + Path.GetExtension(ImageFile.FileName);
+                    var extension = Path.GetExtension(ImageFile.FileName).ToLowerInvariant();
+                    var fileName = Guid.NewGuid().ToString() + extension;
                     var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", "events");
 
                     if (!Directory.Exists(uploadsFolder))
@@ -81,6 +94,20 @@ namespace WindysLanding.Controllers
 
                 _context.Add(@event);
                 await _context.SaveChangesAsync();
+
+                if (!string.IsNullOrEmpty(@event.EventImg))
+                {
+                    var photo = new Photo
+                    {
+                        EventId = @event.EventId,
+                        ImgUrl = @event.EventImg,
+                        Caption = @event.Name
+                    };
+
+                    _context.Photos.Add(photo);
+                    await _context.SaveChangesAsync();
+                }
+
                 return RedirectToAction(nameof(Index));
             }
 
@@ -95,17 +122,19 @@ namespace WindysLanding.Controllers
                 return NotFound();
             }
 
-            var @event = await _context.Events.FindAsync(id);
+            var @event = await _context.Events
+                .Include(e => e.Photos)
+                .FirstOrDefaultAsync(e => e.EventId == id);
+
             if (@event == null)
             {
                 return NotFound();
             }
+
             return View(@event);
         }
 
         // POST: Events/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(
@@ -119,11 +148,25 @@ namespace WindysLanding.Controllers
                 return NotFound();
             }
 
+            if (ImageFile != null && ImageFile.Length > 0)
+            {
+                var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif", ".webp" };
+                var extension = Path.GetExtension(ImageFile.FileName).ToLowerInvariant();
+
+                if (!allowedExtensions.Contains(extension))
+                {
+                    ModelState.AddModelError("ImageFile", "Only image files (JPG, PNG, GIF, WEBP) are allowed");
+                }
+            }
+
             if (ModelState.IsValid)
             {
                 try
                 {
-                    var existingEvent = await _context.Events.FindAsync(id);
+                    var existingEvent = await _context.Events
+                        .Include(e => e.Photos)
+                        .FirstOrDefaultAsync(e => e.EventId == id);
+
                     if (existingEvent == null)
                     {
                         return NotFound();
@@ -137,11 +180,18 @@ namespace WindysLanding.Controllers
                     if (RemovePhoto)
                     {
                         existingEvent.EventImg = null;
+
+                        var existingPhotoRecords = existingEvent.Photos.ToList();
+                        foreach (var photo in existingPhotoRecords)
+                        {
+                            _context.Photos.Remove(photo);
+                        }
                     }
 
                     if (ImageFile != null && ImageFile.Length > 0)
                     {
-                        var fileName = Guid.NewGuid().ToString() + Path.GetExtension(ImageFile.FileName);
+                        var extension = Path.GetExtension(ImageFile.FileName).ToLowerInvariant();
+                        var fileName = Guid.NewGuid().ToString() + extension;
                         var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", "events");
 
                         if (!Directory.Exists(uploadsFolder))
@@ -156,7 +206,30 @@ namespace WindysLanding.Controllers
                             await ImageFile.CopyToAsync(stream);
                         }
 
-                        existingEvent.EventImg = "/images/events/" + fileName;
+                        var imagePath = "/images/events/" + fileName;
+                        existingEvent.EventImg = imagePath;
+
+                        var oldPhotoRecords = existingEvent.Photos.ToList();
+                        foreach (var photo in oldPhotoRecords)
+                        {
+                            _context.Photos.Remove(photo);
+                        }
+
+                        var newPhoto = new Photo
+                        {
+                            EventId = existingEvent.EventId,
+                            ImgUrl = imagePath,
+                            Caption = existingEvent.Name
+                        };
+
+                        _context.Photos.Add(newPhoto);
+                    }
+                    else
+                    {
+                        foreach (var photo in existingEvent.Photos)
+                        {
+                            photo.Caption = existingEvent.Name;
+                        }
                     }
 
                     await _context.SaveChangesAsync();
@@ -188,7 +261,9 @@ namespace WindysLanding.Controllers
             }
 
             var @event = await _context.Events
+                .Include(e => e.Photos)
                 .FirstOrDefaultAsync(m => m.EventId == id);
+
             if (@event == null)
             {
                 return NotFound();
@@ -202,13 +277,22 @@ namespace WindysLanding.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var @event = await _context.Events.FindAsync(id);
+            var @event = await _context.Events
+                .Include(e => e.Photos)
+                .FirstOrDefaultAsync(e => e.EventId == id);
+
             if (@event != null)
             {
+                var relatedPhotos = @event.Photos.ToList();
+                foreach (var photo in relatedPhotos)
+                {
+                    _context.Photos.Remove(photo);
+                }
+
                 _context.Events.Remove(@event);
+                await _context.SaveChangesAsync();
             }
 
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 

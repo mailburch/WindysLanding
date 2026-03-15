@@ -17,7 +17,12 @@ namespace WindysLanding.Controllers
         // GET: Photos
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Photos.Include(p => p.Animal).Include(p => p.Event).Include(p => p.Newsletter).Include(p => p.SponsorCompany);
+            var applicationDbContext = _context.Photos
+                .Include(p => p.Animal)
+                .Include(p => p.Event)
+                .Include(p => p.Newsletter)
+                .Include(p => p.SponsorCompany);
+
             return View(await applicationDbContext.ToListAsync());
         }
 
@@ -35,6 +40,7 @@ namespace WindysLanding.Controllers
                 .Include(p => p.Newsletter)
                 .Include(p => p.SponsorCompany)
                 .FirstOrDefaultAsync(m => m.PhotoId == id);
+
             if (photo == null)
             {
                 return NotFound();
@@ -58,16 +64,13 @@ namespace WindysLanding.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("PhotoId,AnimalId,SponsorCompanyId,NewsletterId,EventId,ImgUrl,Caption")] Photo photo, IFormFile ImageFile)
         {
-            // Remove ImgUrl validation if file is being uploaded
             if (ImageFile != null && ImageFile.Length > 0)
             {
                 ModelState.Remove("ImgUrl");
             }
 
-            // Handle file upload if provided
             if (ImageFile != null && ImageFile.Length > 0)
             {
-                // Validate file size (10MB max)
                 if (ImageFile.Length > 10 * 1024 * 1024)
                 {
                     ModelState.AddModelError("ImageFile", "File size cannot exceed 10MB");
@@ -78,7 +81,6 @@ namespace WindysLanding.Controllers
                     return View(photo);
                 }
 
-                // Validate file type
                 var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif", ".webp" };
                 var extension = Path.GetExtension(ImageFile.FileName).ToLowerInvariant();
 
@@ -92,32 +94,26 @@ namespace WindysLanding.Controllers
                     return View(photo);
                 }
 
-                // Generate unique filename
                 var fileName = Guid.NewGuid().ToString() + extension;
 
-                // Determine subfolder based on what the photo belongs to
                 string subfolder = "general";
                 if (photo.AnimalId.HasValue) subfolder = "animals";
                 else if (photo.SponsorCompanyId.HasValue) subfolder = "sponsors";
                 else if (photo.EventId.HasValue) subfolder = "events";
                 else if (photo.NewsletterId.HasValue) subfolder = "newsletters";
 
-                // Create directory if it doesn't exist
                 var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", subfolder);
                 Directory.CreateDirectory(uploadsFolder);
 
-                // Save file
                 var filePath = Path.Combine(uploadsFolder, fileName);
                 using (var stream = new FileStream(filePath, FileMode.Create))
                 {
                     await ImageFile.CopyToAsync(stream);
                 }
 
-                // Set the ImgUrl to the saved file path
                 photo.ImgUrl = $"/images/{subfolder}/{fileName}";
             }
 
-            // If no file uploaded and no URL provided, return error
             if (string.IsNullOrWhiteSpace(photo.ImgUrl))
             {
                 ModelState.AddModelError("ImageFile", "Please upload an image or provide an image URL");
@@ -132,6 +128,18 @@ namespace WindysLanding.Controllers
             {
                 _context.Add(photo);
                 await _context.SaveChangesAsync();
+
+                // Keep Event.EventImg in sync
+                if (photo.EventId.HasValue)
+                {
+                    var relatedEvent = await _context.Events.FindAsync(photo.EventId.Value);
+                    if (relatedEvent != null)
+                    {
+                        relatedEvent.EventImg = photo.ImgUrl;
+                        await _context.SaveChangesAsync();
+                    }
+                }
+
                 return RedirectToAction(nameof(Index));
             }
 
@@ -149,11 +157,13 @@ namespace WindysLanding.Controllers
             {
                 return NotFound();
             }
+
             var photo = await _context.Photos.FindAsync(id);
             if (photo == null)
             {
                 return NotFound();
             }
+
             ViewData["AnimalId"] = new SelectList(_context.Animals, "AnimalId", "Name", photo.AnimalId);
             ViewData["EventId"] = new SelectList(_context.Events, "EventId", "Name", photo.EventId);
             ViewData["NewsletterId"] = new SelectList(_context.Newsletters, "NewsletterId", "Title", photo.NewsletterId);
@@ -171,20 +181,16 @@ namespace WindysLanding.Controllers
                 return NotFound();
             }
 
-            // Get the existing photo from database to preserve the old ImgUrl if needed
             var existingPhoto = await _context.Photos.AsNoTracking().FirstOrDefaultAsync(p => p.PhotoId == id);
             if (existingPhoto == null)
             {
                 return NotFound();
             }
 
-            // Handle file upload if provided
             if (ImageFile != null && ImageFile.Length > 0)
             {
-                // Remove ImgUrl validation if file is being uploaded
                 ModelState.Remove("ImgUrl");
 
-                // Validate file size (10MB max)
                 if (ImageFile.Length > 10 * 1024 * 1024)
                 {
                     ModelState.AddModelError("ImageFile", "File size cannot exceed 10MB");
@@ -195,7 +201,6 @@ namespace WindysLanding.Controllers
                     return View(photo);
                 }
 
-                // Validate file type
                 var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif", ".webp" };
                 var extension = Path.GetExtension(ImageFile.FileName).ToLowerInvariant();
 
@@ -209,7 +214,6 @@ namespace WindysLanding.Controllers
                     return View(photo);
                 }
 
-                // Delete old file if it exists and is a local file
                 if (!string.IsNullOrEmpty(existingPhoto.ImgUrl) && existingPhoto.ImgUrl.StartsWith("/images/"))
                 {
                     var oldFilePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", existingPhoto.ImgUrl.TrimStart('/'));
@@ -219,33 +223,27 @@ namespace WindysLanding.Controllers
                     }
                 }
 
-                // Generate unique filename
                 var fileName = Guid.NewGuid().ToString() + extension;
 
-                // Determine subfolder based on what the photo belongs to
                 string subfolder = "general";
                 if (photo.AnimalId.HasValue) subfolder = "animals";
                 else if (photo.SponsorCompanyId.HasValue) subfolder = "sponsors";
                 else if (photo.EventId.HasValue) subfolder = "events";
                 else if (photo.NewsletterId.HasValue) subfolder = "newsletters";
 
-                // Create directory if it doesn't exist
                 var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", subfolder);
                 Directory.CreateDirectory(uploadsFolder);
 
-                // Save file
                 var filePath = Path.Combine(uploadsFolder, fileName);
                 using (var stream = new FileStream(filePath, FileMode.Create))
                 {
                     await ImageFile.CopyToAsync(stream);
                 }
 
-                // Set the ImgUrl to the saved file path
                 photo.ImgUrl = $"/images/{subfolder}/{fileName}";
             }
             else if (string.IsNullOrWhiteSpace(photo.ImgUrl))
             {
-                // No new file uploaded and URL is empty - keep the existing URL
                 photo.ImgUrl = existingPhoto.ImgUrl;
             }
 
@@ -255,6 +253,28 @@ namespace WindysLanding.Controllers
                 {
                     _context.Update(photo);
                     await _context.SaveChangesAsync();
+
+                    // Keep Event.EventImg in sync
+                    if (photo.EventId.HasValue)
+                    {
+                        var relatedEvent = await _context.Events.FindAsync(photo.EventId.Value);
+                        if (relatedEvent != null)
+                        {
+                            relatedEvent.EventImg = photo.ImgUrl;
+                            await _context.SaveChangesAsync();
+                        }
+                    }
+
+                    // If the photo used to belong to a different event, clear old event image if needed
+                    if (existingPhoto.EventId.HasValue && existingPhoto.EventId != photo.EventId)
+                    {
+                        var oldEvent = await _context.Events.FindAsync(existingPhoto.EventId.Value);
+                        if (oldEvent != null && oldEvent.EventImg == existingPhoto.ImgUrl)
+                        {
+                            oldEvent.EventImg = null;
+                            await _context.SaveChangesAsync();
+                        }
+                    }
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -267,6 +287,7 @@ namespace WindysLanding.Controllers
                         throw;
                     }
                 }
+
                 return RedirectToAction(nameof(Index));
             }
 
@@ -291,6 +312,7 @@ namespace WindysLanding.Controllers
                 .Include(p => p.Newsletter)
                 .Include(p => p.SponsorCompany)
                 .FirstOrDefaultAsync(m => m.PhotoId == id);
+
             if (photo == null)
             {
                 return NotFound();
@@ -305,12 +327,30 @@ namespace WindysLanding.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var photo = await _context.Photos.FindAsync(id);
+
             if (photo != null)
             {
+                var deletedImgUrl = photo.ImgUrl;
+                var deletedEventId = photo.EventId;
+
                 _context.Photos.Remove(photo);
+                await _context.SaveChangesAsync();
+
+                // Keep Event.EventImg in sync
+                if (deletedEventId.HasValue)
+                {
+                    var relatedEvent = await _context.Events
+                        .Include(e => e.Photos)
+                        .FirstOrDefaultAsync(e => e.EventId == deletedEventId.Value);
+
+                    if (relatedEvent != null && relatedEvent.EventImg == deletedImgUrl)
+                    {
+                        relatedEvent.EventImg = relatedEvent.Photos.FirstOrDefault()?.ImgUrl;
+                        await _context.SaveChangesAsync();
+                    }
+                }
             }
 
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 

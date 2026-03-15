@@ -28,10 +28,15 @@
                 <div class="row g-0">
 
                     <div class="col-md-3">
-                        @if (!string.IsNullOrEmpty(item.EventImg))
+                        @{
+                            var displayImage = item.Photos?.FirstOrDefault()?.ImgUrl
+                            ?? item.EventImg;
+                        }
+
+                        @if (!string.IsNullOrEmpty(displayImage))
                         {
                             <div class="bg-light d-flex align-items-center justify-content-center rounded-start" style="height:220px;">
-                                <img src="@item.EventImg"
+                                <img src="@displayImage"
                                      class="img-fluid"
                                      alt="@item.Name"
                                      style="max-height:100%; max-width:100%; object-fit:contain;">

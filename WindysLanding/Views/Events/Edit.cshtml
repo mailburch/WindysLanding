@@ -4,6 +4,8 @@
     ViewData["Title"] = "Edit Event";
 }
 
+@* TODO: This page should only be accessible to Admin users once authentication is implemented *@
+
 <div class="row justify-content-center">
     <div class="col-md-8 col-lg-6">
         <div class="text-center mb-4">
@@ -76,12 +78,12 @@
                 <label for="ImageFile" class="form-label">Upload New Photo</label>
                 <input type="file" name="ImageFile" id="ImageFile" class="form-control" accept="image/*" />
                 <div class="form-text">Leave blank to keep the current photo.</div>
+                <span class="text-danger">@Html.ValidationMessage("ImageFile")</span>
             </div>
 
             <div class="d-flex justify-content-center gap-2 mt-4">
                 <input type="submit" value="Save Changes" class="btn btn-primary" />
-                <a asp-action="Index" asp-route-id="@Model.EventId" class="btn btn-outline-secondary">Cancel</a>
-                <a asp-action="Index" class="btn btn-outline-primary">Back to Events</a>
+                <a asp-action="Index" class="btn btn-outline-secondary">Cancel</a>
             </div>
         </form>
     </div>

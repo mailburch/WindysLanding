@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WindysLanding.Models;
@@ -16,6 +17,7 @@ namespace WindysLanding.Controllers
         }
 
         // GET: SponsorCompanies (Admin - manage sponsors)
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Index()
         {
             var sponsors = await _context.SponsorCompanies
@@ -33,7 +35,8 @@ namespace WindysLanding.Controllers
             return View(sponsors);
         }
 
-        // GET: SponsorCompanies/Details/5
+        // GET: SponsorCompanies/Details/5 (ADMIN ONLY)
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null) return NotFound();
@@ -47,15 +50,17 @@ namespace WindysLanding.Controllers
             return View(sponsorCompany);
         }
 
-        // GET: SponsorCompanies/Create
+        // GET: SponsorCompanies/Create (ADMIN ONLY)
+        [Authorize(Roles = "Admin")]
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: SponsorCompanies/Create
+        // POST: SponsorCompanies/Create (ADMIN ONLY)
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create([Bind("SponsorCompanyId,Name,Description")] SponsorCompany sponsorCompany, IFormFile logo)
         {
             if (ModelState.IsValid)
@@ -74,7 +79,8 @@ namespace WindysLanding.Controllers
             return View(sponsorCompany);
         }
 
-        // GET: SponsorCompanies/Edit/5
+        // GET: SponsorCompanies/Edit/5 (ADMIN ONLY)
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null) return NotFound();
@@ -88,9 +94,10 @@ namespace WindysLanding.Controllers
             return View(sponsorCompany);
         }
 
-        // POST: SponsorCompanies/Edit/5
+        // POST: SponsorCompanies/Edit/5 (ADMIN ONLY)
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int id, [Bind("SponsorCompanyId,Name,Description")] SponsorCompany sponsorCompany, IFormFile logo)
         {
             if (id != sponsorCompany.SponsorCompanyId) return NotFound();
@@ -133,7 +140,8 @@ namespace WindysLanding.Controllers
             return View(sponsorCompany);
         }
 
-        // GET: SponsorCompanies/Delete/5
+        // GET: SponsorCompanies/Delete/5 (ADMIN ONLY)
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null) return NotFound();
@@ -147,9 +155,10 @@ namespace WindysLanding.Controllers
             return View(sponsorCompany);
         }
 
-        // POST: SponsorCompanies/Delete/5
+        // POST: SponsorCompanies/Delete/5 (ADMIN ONLY)
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var sponsorCompany = await _context.SponsorCompanies
@@ -174,9 +183,10 @@ namespace WindysLanding.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // POST: SponsorCompanies/DeleteLogo/5
+        // POST: SponsorCompanies/DeleteLogo/5 (ADMIN ONLY)
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteLogo(int id)
         {
             var photo = await _context.Photos.FindAsync(id);

@@ -1,9 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using WindysLanding.Models;
 
@@ -55,7 +51,20 @@ namespace WindysLanding.Controllers
             return View(await query.ToListAsync());
         }
 
-        // GET: FAQs/Details/5
+        // GET: FAQs/Manage (ADMIN ONLY - management view)
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Manage()
+        {
+            var faqs = await _context.FAQs
+                .OrderBy(f => f.Category)
+                .ThenBy(f => f.DisplayOrder)
+                .ToListAsync();
+
+            return View(faqs);
+        }
+
+        // GET: FAQs/Details/5 (ADMIN ONLY)
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -73,27 +82,30 @@ namespace WindysLanding.Controllers
             return View(fAQ);
         }
 
-        // GET: FAQs/Create
+        // GET: FAQs/Create (ADMIN ONLY)
+        [Authorize(Roles = "Admin")]
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: FAQs/Create
+        // POST: FAQs/Create (ADMIN ONLY)
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create([Bind("FaqId,Question,Answer,Category,DisplayOrder")] FAQ fAQ)
         {
             if (ModelState.IsValid)
             {
                 _context.Add(fAQ);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Manage));
             }
             return View(fAQ);
         }
 
-        // GET: FAQs/Edit/5
+        // GET: FAQs/Edit/5 (ADMIN ONLY)
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -109,9 +121,10 @@ namespace WindysLanding.Controllers
             return View(fAQ);
         }
 
-        // POST: FAQs/Edit/5
+        // POST: FAQs/Edit/5 (ADMIN ONLY)
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int id, [Bind("FaqId,Question,Answer,Category,DisplayOrder")] FAQ fAQ)
         {
             if (id != fAQ.FaqId)
@@ -137,12 +150,13 @@ namespace WindysLanding.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Manage));
             }
             return View(fAQ);
         }
 
-        // GET: FAQs/Delete/5
+        // GET: FAQs/Delete/5 (ADMIN ONLY)
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -160,9 +174,10 @@ namespace WindysLanding.Controllers
             return View(fAQ);
         }
 
-        // POST: FAQs/Delete/5
+        // POST: FAQs/Delete/5 (ADMIN ONLY)
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var fAQ = await _context.FAQs.FindAsync(id);
@@ -172,7 +187,7 @@ namespace WindysLanding.Controllers
             }
 
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Manage));
         }
 
         private bool FAQExists(int id)

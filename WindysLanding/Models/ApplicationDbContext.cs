@@ -1,8 +1,10 @@
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace WindysLanding.Models
 {
-    public class ApplicationDbContext : DbContext
+    // Changed from DbContext to IdentityDbContext<ApplicationUser>
+    public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
@@ -23,7 +25,7 @@ namespace WindysLanding.Models
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            base.OnModelCreating(modelBuilder);
+            base.OnModelCreating(modelBuilder); // IMPORTANT: Must call base for Identity tables
 
             // Configure any specific relationships or constraints here if needed
             // For example, you could configure cascade delete behavior, indexes, etc.

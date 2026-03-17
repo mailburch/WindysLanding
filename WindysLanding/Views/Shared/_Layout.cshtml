@@ -59,24 +59,27 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="FAQs" asp-action="Index">FAQ</a>
                         </li>
 
-                        <!-- Admin Dropdown -->
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle text-dark" href="#" id="adminDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                Admin
-                            </a>
-                            <ul class="dropdown-menu" aria-labelledby="adminDropdown">
-                                <li><a class="dropdown-item" asp-controller="Animals" asp-action="Index">Manage Animals</a></li>
-                                <li><a class="dropdown-item" asp-controller="Photos" asp-action="Index">Manage Photos</a></li>
-                                <li><a class="dropdown-item" asp-controller="Events" asp-action="Index">Manage Events</a></li>
-                                <li><a class="dropdown-item" asp-controller="FAQs" asp-action="Index">Manage FAQs</a></li>
-                                <li><a class="dropdown-item" asp-controller="Newsletters" asp-action="Index">Manage Newsletters</a></li>
-                                <li><a class="dropdown-item" asp-controller="SuccessStories" asp-action="Index">Manage Success Stories</a></li>
-                                <li><a class="dropdown-item" asp-controller="SponsorCompanies" asp-action="Index">Manage Sponsors</a></li>
-                                <li><a class="dropdown-item" asp-controller="VolunteerApplications" asp-action="Index">Volunteer Applications</a></li>
-                                <li><a class="dropdown-item" asp-controller="ContactInfos" asp-action="Index">Contact Info</a></li>
-                                <li><a class="dropdown-item" asp-controller="Users" asp-action="Index">Users</a></li>
-                            </ul>
-                        </li>
+                        <!-- Admin Dropdown (Only for Admins) -->
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle text-dark" href="#" id="adminDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Admin
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="adminDropdown">
+                                    <li><a class="dropdown-item" asp-controller="Animals" asp-action="Index">Manage Animals</a></li>
+                                    <li><a class="dropdown-item" asp-controller="Photos" asp-action="Index">Manage Photos</a></li>
+                                    <li><a class="dropdown-item" asp-controller="Events" asp-action="Index">Manage Events</a></li>
+                                    <li><a class="dropdown-item" asp-controller="FAQs" asp-action="Manage">Manage FAQs</a></li>
+                                    <li><a class="dropdown-item" asp-controller="Newsletters" asp-action="Index">Manage Newsletters</a></li>
+                                    <li><a class="dropdown-item" asp-controller="SuccessStories" asp-action="Index">Manage Success Stories</a></li>
+                                    <li><a class="dropdown-item" asp-controller="SponsorCompanies" asp-action="Index">Manage Sponsors</a></li>
+                                    <li><a class="dropdown-item" asp-controller="VolunteerApplications" asp-action="Index">Volunteer Applications</a></li>
+                                    <li><a class="dropdown-item" asp-controller="ContactInfos" asp-action="Index">Contact Info</a></li>
+                                    <li><a class="dropdown-item" asp-controller="Users" asp-action="Index">Users</a></li>
+                                </ul>
+                            </li>
+                        }
 
                         <!-- Contact/About -->
                         <li class="nav-item">
@@ -88,6 +91,9 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">About</a>
                         </li>
                     </ul>
+                    
+                    <!-- Login/Logout Partial -->
+                    <partial name="_LoginPartial" />
                 </div>
             </div>
         </nav>

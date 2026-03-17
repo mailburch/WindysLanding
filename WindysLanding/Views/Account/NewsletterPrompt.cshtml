@@ -1,0 +1,35 @@
+﻿@{
+    ViewData["Title"] = "Stay Updated";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-body p-5 text-center">
+                    <h2 class="mb-4">Welcome to Windy's Landing!</h2>
+                    
+                    <p class="lead mb-4">
+                        Would you like to receive our monthly newsletter with updates about our animals, events, and success stories?
+                    </p>
+
+                    <form asp-action="NewsletterPrompt" asp-route-returnUrl="@ViewData["ReturnUrl"]" method="post">
+                        <div class="d-grid gap-3">
+                            <button type="submit" name="subscribeToNewsletter" value="true" class="btn btn-primary btn-lg">
+                                ✓ Yes, send me updates!
+                            </button>
+                            
+                            <button type="submit" name="subscribeToNewsletter" value="false" class="btn btn-outline-secondary">
+                                No thanks
+                            </button>
+                        </div>
+                    </form>
+
+                    <p class="text-muted mt-4 mb-0">
+                        <small>You can change this preference anytime in your profile.</small>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

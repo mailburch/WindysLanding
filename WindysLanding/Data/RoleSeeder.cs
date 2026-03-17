@@ -21,8 +21,8 @@ namespace WindysLanding.Data
             {
                 "crazeebra@gmail.com",        // ← Liam
                 "Nguyen49@mail.nmc.edu",          // ← Rico
-                "teammate2@gmail.com",          // ← Hope
-                "teammate3@gmail.com"           // ← Cade
+                "vittorh@mail.nmc.edu",          // ← Hope
+                "cadealpersbusiness@gmail.com"           // ← Cade
             };
 
             // Make each email an admin

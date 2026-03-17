@@ -21,6 +21,9 @@ namespace WindysLanding.Models
         [Display(Name = "Event")]
         public int? EventId { get; set; }
 
+        [Display(Name = "Success Story")]
+        public int? SuccessStoryId { get; set; }
+
         [StringLength(500)]
         [Display(Name = "Image URL")]
         public string? ImgUrl { get; set; }
@@ -41,5 +44,8 @@ namespace WindysLanding.Models
 
         [ForeignKey("EventId")]
         public virtual Event? Event { get; set; }
+
+        [ForeignKey("SuccessStoryId")]
+        public virtual SuccessStory? SuccessStory { get; set; }
     }
 }

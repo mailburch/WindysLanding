@@ -8,7 +8,7 @@
     <div class="container">
         <h1 class="page-title">Success Stories</h1>
         <p class="page-subtitle">
-            Meet some of the animals who found loving homes through Windy’s Landing Animal Rescue.
+            Meet some of the animals who found loving homes through Windy's Landing Animal Rescue.
         </p>
     </div>
 </section>
@@ -40,8 +40,8 @@
             ? item.Content.Substring(0, 180) + "..."
             : item.Content;
 
-            var imageUrl = !string.IsNullOrWhiteSpace(item.Photo?.ImgUrl)
-            ? item.Photo.ImgUrl
+            var imageUrl = (item.Photos != null && item.Photos.Any())
+            ? item.Photos.First().ImgUrl
             : Url.Content("~/images/placeholder-animal.jpg");
 
             <div class="card shadow-sm border-0 story-card mb-4">
@@ -93,7 +93,7 @@
         <p class="text-muted mb-3">
             Browse available animals and learn more about adoption opportunities.
         </p>
-        <a asp-controller="Animals" asp-action="Index" class="btn btn-secondary">
+        <a asp-controller="Animals" asp-action="Adoption" class="btn btn-secondary">
             View Available Animals
         </a>
     </section>

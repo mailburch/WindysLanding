@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -47,6 +48,7 @@ namespace WindysLanding.Controllers
             return View(successStory);
         }
 
+        [Authorize(Roles = "Admin")]
         public IActionResult Create()
         {
             ViewData["AnimalId"] = new SelectList(_context.Animals, "AnimalId", "Name");
@@ -55,6 +57,7 @@ namespace WindysLanding.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create([Bind("StoryId,AnimalId,Title,Content,DatePublished")] SuccessStory successStory, List<IFormFile> photos)
         {
             if (ModelState.IsValid)
@@ -75,6 +78,7 @@ namespace WindysLanding.Controllers
             return View(successStory);
         }
 
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -97,6 +101,7 @@ namespace WindysLanding.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int id, [Bind("StoryId,AnimalId,Title,Content,DatePublished")] SuccessStory successStory, List<IFormFile> photos)
         {
             if (id != successStory.StoryId)
@@ -138,6 +143,7 @@ namespace WindysLanding.Controllers
             return View(successStory);
         }
 
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -160,6 +166,7 @@ namespace WindysLanding.Controllers
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var successStory = await _context.SuccessStories
@@ -184,9 +191,10 @@ namespace WindysLanding.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // POST: Delete individual photo
+        // POST: Delete individual photo (ADMIN ONLY)
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeletePhoto(int id)
         {
             var photo = await _context.Photos.FindAsync(id);

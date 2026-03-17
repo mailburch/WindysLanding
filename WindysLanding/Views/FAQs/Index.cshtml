@@ -1,5 +1,4 @@
 @model IEnumerable<WindysLanding.Models.FAQ>
-
 @{
     ViewData["Title"] = "FAQs";
     string? currentCategory = ViewData["CurrentCategory"] as string;
@@ -7,60 +6,109 @@
     var categories = ViewData["Categories"] as List<string> ?? new List<string>();
 }
 
-<h1>FREQUENTLY ASKED QUESTIONS</h1>
+<div class="container mt-4">
+    <div class="text-center mb-5">
+        <h1 class="display-4">Frequently Asked Questions</h1>
+        <p class="lead text-muted">Find answers to common questions about Windy's Landing Animal Rescue</p>
+    </div>
 
-<hr />
+    <!-- Search Bar -->
+    <div class="row justify-content-center mb-4">
+        <div class="col-md-8">
+            <form method="get" asp-action="Index">
+                <input type="hidden" name="category" value="@currentCategory" />
+                <div class="input-group input-group-lg">
+                    <input type="text"
+                           name="search"
+                           value="@currentSearch"
+                           class="form-control"
+                           placeholder="Search FAQs..." />
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-search"></i> Search
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
 
-<!-- Search Bar -->
-<form method="get" asp-action="Index">
-    <input type="hidden" name="category" value="@currentCategory" />
-    <input type="text"
-           name="search"
-           value="@currentSearch"
-           placeholder="Search FAQs..." />
-    <button type="submit">Search</button>
-</form>
-
-<!-- Category Filter Tabs -->
-<div>
-    <a asp-action="Index"
-       asp-route-search="@currentSearch"
-       asp-route-category="">
-        [All]
-    </a>
-
-    @foreach (var cat in categories)
+    <!-- Category Filter Tabs -->
+    @if (categories.Any())
     {
-        <a asp-action="Index"
-           asp-route-search="@currentSearch"
-           asp-route-category="@cat">
-            [@cat]
-        </a>
-    }
-</div>
-
-<!-- FAQ Accordion -->
-@if (!Model.Any())
-{
-    <p>No FAQs found.</p>
-}
-else
-{
-    @foreach (var faq in Model)
-    {
-        <details>
-            <summary>@faq.Question</summary>
-            <div>
-                <p>@faq.Answer</p>
+        <div class="text-center mb-4">
+            <div class="btn-group flex-wrap" role="group">
+                <a asp-action="Index"
+                   asp-route-search="@currentSearch"
+                   asp-route-category=""
+                   class="btn @(string.IsNullOrEmpty(currentCategory) ? "btn-primary" : "btn-outline-primary")">
+                    All
+                </a>
+                @foreach (var cat in categories)
+                {
+                    <a asp-action="Index"
+                       asp-route-search="@currentSearch"
+                       asp-route-category="@cat"
+                       class="btn @(currentCategory == cat ? "btn-primary" : "btn-outline-primary")">
+                        @cat
+                    </a>
+                }
             </div>
-        </details>
-        <hr />
+        </div>
     }
-}
 
-<!-- Didn't find your answer -->
-<div>
-    <strong>Didn't find your answer?</strong>
-    <p>We're here to help! Contact us via email for fastest response.</p>
-    <a asp-controller="Home" asp-action="Contact">Contact Us</a>
+    <!-- FAQ Accordion -->
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info text-center">
+            <h5>No FAQs found</h5>
+            <p class="mb-0">Try adjusting your search or category filter.</p>
+        </div>
+    }
+    else
+    {
+        <div class="accordion" id="faqAccordion">
+            @{
+                int index = 0;
+                foreach (var faq in Model)
+                {
+                    var collapseId = $"collapse{index}";
+                    var headingId = $"heading{index}";
+                    
+                    <div class="accordion-item mb-3 border rounded shadow-sm">
+                        <h2 class="accordion-header" id="@headingId">
+                            <button class="accordion-button collapsed" 
+                                    type="button" 
+                                    data-bs-toggle="collapse" 
+                                    data-bs-target="#@collapseId"
+                                    aria-expanded="false" 
+                                    aria-controls="@collapseId">
+                                <strong>@faq.Question</strong>
+                            </button>
+                        </h2>
+                        <div id="@collapseId" 
+                             class="accordion-collapse collapse" 
+                             aria-labelledby="@headingId" 
+                             data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                <p class="mb-0">@faq.Answer</p>
+                            </div>
+                        </div>
+                    </div>
+                    index++;
+                }
+            }
+        </div>
+    }
+
+    <!-- Contact Section -->
+    <div class="card mt-5 bg-light">
+        <div class="card-body text-center p-4">
+            <h4 class="mb-3">Didn't find your answer?</h4>
+            <p class="text-muted mb-3">
+                We're here to help! Contact us and we'll get back to you as soon as possible.
+            </p>
+            <a asp-controller="Home" asp-action="Contact" class="btn btn-primary btn-lg">
+                Contact Us
+            </a>
+        </div>
+    </div>
 </div>

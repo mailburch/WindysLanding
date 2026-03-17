@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WindysLanding.Models;
@@ -15,7 +16,8 @@ namespace WindysLanding.Controllers
             _webHostEnvironment = webHostEnvironment;
         }
 
-        // GET: Animals
+        // GET: Animals (ADMIN ONLY - management view)
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Index(string searchString, string animalType, bool? adoptionStatus)
         {
             var animals = _context.Animals.Include(a => a.Photos).AsQueryable();
@@ -88,15 +90,17 @@ namespace WindysLanding.Controllers
             return View(animal);
         }
 
-        // GET: Animals/Create
+        // GET: Animals/Create (ADMIN ONLY)
+        [Authorize(Roles = "Admin")]
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Animals/Create
+        // POST: Animals/Create (ADMIN ONLY)
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create([Bind("AnimalId,Name,AnimalType,Age,Size,Description,Gender,Breed,Color,Experience,AdoptionStatus,SponsorshipAvailable,SponsorshipUrl")] Animal animal, List<IFormFile> photos)
         {
             if (ModelState.IsValid)
@@ -115,7 +119,8 @@ namespace WindysLanding.Controllers
             return View(animal);
         }
 
-        // GET: Animals/Edit/5
+        // GET: Animals/Edit/5 (ADMIN ONLY)
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null) return NotFound();
@@ -129,9 +134,10 @@ namespace WindysLanding.Controllers
             return View(animal);
         }
 
-        // POST: Animals/Edit/5
+        // POST: Animals/Edit/5 (ADMIN ONLY)
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int id, [Bind("AnimalId,Name,AnimalType,Age,Size,Description,Gender,Breed,Color,Experience,AdoptionStatus,SponsorshipAvailable,SponsorshipUrl")] Animal animal, List<IFormFile> photos)
         {
             if (id != animal.AnimalId) return NotFound();
@@ -169,7 +175,8 @@ namespace WindysLanding.Controllers
             return View(animal);
         }
 
-        // GET: Animals/Delete/5
+        // GET: Animals/Delete/5 (ADMIN ONLY)
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null) return NotFound();
@@ -183,9 +190,10 @@ namespace WindysLanding.Controllers
             return View(animal);
         }
 
-        // POST: Animals/Delete/5
+        // POST: Animals/Delete/5 (ADMIN ONLY)
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var animal = await _context.Animals
@@ -209,9 +217,10 @@ namespace WindysLanding.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // POST: Animals/DeletePhoto/5
+        // POST: Animals/DeletePhoto/5 (ADMIN ONLY)
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeletePhoto(int id)
         {
             var photo = await _context.Photos.FindAsync(id);

@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -5,6 +6,7 @@ using WindysLanding.Models;
 
 namespace WindysLanding.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class PhotosController : Controller
     {
         private readonly ApplicationDbContext _context;

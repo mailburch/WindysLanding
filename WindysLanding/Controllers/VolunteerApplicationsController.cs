@@ -1,9 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using WindysLanding.Models;
 
@@ -18,13 +14,16 @@ namespace WindysLanding.Controllers
             _context = context;
         }
 
-        // GET: VolunteerApplications
+        // GET: VolunteerApplications (ADMIN ONLY)
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Index()
         {
             return View(await _context.VolunteerApplications.ToListAsync());
         }
 
-        // GET: VolunteerApplications/Details/5
+        // GET: VolunteerApplications/Details/5 (ADMIN ONLY)
+        // GET: VolunteerApplications/Details/5 (ADMIN ONLY)
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -90,7 +89,8 @@ namespace WindysLanding.Controllers
             return View(volunteerApplication);
         }
 
-        // GET: VolunteerApplications/Edit/5
+        // GET: VolunteerApplications/Edit/5 (ADMIN ONLY)
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -109,9 +109,10 @@ namespace WindysLanding.Controllers
         // POST: VolunteerApplications/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        // POST: VolunteerApplications/Edit/5
+        // POST: VolunteerApplications/Edit/5 (ADMIN ONLY)
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int id, [Bind("ApplicationId,Name,Email,Phone,VolunteerDescription,WaiverSigned,WaiverSignedDate")] VolunteerApplication volunteerApplication)
         {
             if (id != volunteerApplication.ApplicationId)
@@ -164,7 +165,8 @@ namespace WindysLanding.Controllers
             return View(volunteerApplication);
         }
 
-        // GET: VolunteerApplications/Delete/5
+        // GET: VolunteerApplications/Delete/5 (ADMIN ONLY)
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -182,9 +184,10 @@ namespace WindysLanding.Controllers
             return View(volunteerApplication);
         }
 
-        // POST: VolunteerApplications/Delete/5
+        // POST: VolunteerApplications/Delete/5 (ADMIN ONLY)
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var volunteerApplication = await _context.VolunteerApplications.FindAsync(id);

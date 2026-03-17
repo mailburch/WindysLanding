@@ -1,0 +1,84 @@
+﻿@model IEnumerable<WindysLanding.Models.FAQ>
+@{
+    ViewData["Title"] = "Manage FAQs";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Manage FAQs</h1>
+    <a asp-action="Create" class="btn btn-primary">Add New FAQ</a>
+</div>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">
+        <p class="mb-0">No FAQs yet. <a asp-action="Create">Add your first FAQ</a></p>
+    </div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <thead class="table-light">
+                <tr>
+                    <th style="width: 5%">Order</th>
+                    <th style="width: 15%">Category</th>
+                    <th style="width: 35%">Question</th>
+                    <th style="width: 30%">Answer</th>
+                    <th style="width: 15%" class="text-center">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var faq in Model)
+                {
+                    <tr>
+                        <td class="align-middle">
+                            <span class="badge bg-secondary">@faq.DisplayOrder</span>
+                        </td>
+                        <td class="align-middle">
+                            @if (!string.IsNullOrEmpty(faq.Category))
+                            {
+                                <span class="badge bg-info">@faq.Category</span>
+                            }
+                            else
+                            {
+                                <span class="text-muted">—</span>
+                            }
+                        </td>
+                        <td class="align-middle">
+                            <strong>@faq.Question</strong>
+                        </td>
+                        <td class="align-middle">
+                            <small class="text-muted">
+                                @(faq.Answer.Length > 100 ? faq.Answer.Substring(0, 100) + "..." : faq.Answer)
+                            </small>
+                        </td>
+                        <td class="align-middle text-center">
+                            <div class="btn-group btn-group-sm" role="group">
+                                <a asp-action="Details" asp-route-id="@faq.FaqId" class="btn btn-outline-info" title="View">
+                                    Details
+                                </a>
+                                <a asp-action="Edit" asp-route-id="@faq.FaqId" class="btn btn-outline-secondary" title="Edit">
+                                    Edit
+                                </a>
+                                <a asp-action="Delete" asp-route-id="@faq.FaqId" class="btn btn-outline-danger" title="Delete">
+                                    Delete
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <div class="mt-3">
+        <p class="text-muted">
+            <strong>Total FAQs:</strong> @Model.Count()
+        </p>
+    </div>
+}
+
+<div class="mt-4">
+    <a asp-controller="Home" asp-action="Index" class="btn btn-secondary">Back to Home</a>
+    <a asp-action="Index" asp-controller="FAQs" class="btn btn-outline-primary">View Public FAQ Page</a>
+</div>

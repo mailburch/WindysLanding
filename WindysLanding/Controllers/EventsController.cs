@@ -1,12 +1,7 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WindysLanding.Models;
-using System.IO;
-using Microsoft.AspNetCore.Http;
 
 namespace WindysLanding.Controllers
 {
@@ -47,15 +42,17 @@ namespace WindysLanding.Controllers
             return View(@event);
         }
 
-        // GET: Events/Create
+        // GET: Events/Create (ADMIN ONLY)
+        [Authorize(Roles = "Admin")]
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Events/Create
+        // POST: Events/Create (ADMIN ONLY)
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create([Bind("EventId,Name,Description,Date,EventUrl")] Event @event, IFormFile? ImageFile)
         {
             if (ImageFile != null && ImageFile.Length > 0)
@@ -114,7 +111,8 @@ namespace WindysLanding.Controllers
             return View(@event);
         }
 
-        // GET: Events/Edit/5
+        // GET: Events/Edit/5 (ADMIN ONLY)
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -134,9 +132,10 @@ namespace WindysLanding.Controllers
             return View(@event);
         }
 
-        // POST: Events/Edit/5
+        // POST: Events/Edit/5 (ADMIN ONLY)
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(
             int id,
             [Bind("EventId,Name,Description,Date,EventUrl,EventImg")] Event @event,
@@ -252,7 +251,8 @@ namespace WindysLanding.Controllers
             return View(@event);
         }
 
-        // GET: Events/Delete/5
+        // GET: Events/Delete/5 (ADMIN ONLY)
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -272,9 +272,10 @@ namespace WindysLanding.Controllers
             return View(@event);
         }
 
-        // POST: Events/Delete/5
+        // POST: Events/Delete/5 (ADMIN ONLY)
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var @event = await _context.Events

@@ -1,9 +1,7 @@
 ﻿@model IEnumerable<WindysLanding.Models.SuccessStory>
-
 @{
     ViewData["Title"] = "Success Stories";
 }
-
 <section class="page-hero text-center">
     <div class="container">
         <h1 class="page-title">Success Stories</h1>
@@ -12,24 +10,26 @@
         </p>
     </div>
 </section>
-
 <div class="container py-4">
-
     <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
         <div>
             <h2 class="section-title mb-1">Happy Endings</h2>
             <p class="text-muted mb-0">Stories of rescue, recovery, and adoption.</p>
         </div>
-
-        <a asp-action="Create" class="btn btn-primary">Create New Story</a>
+        @if (User.IsInRole("Admin"))
+        {
+            <a asp-action="Create" class="btn btn-primary">Create New Story</a>
+        }
     </div>
-
     @if (!Model.Any())
     {
         <div class="card shadow-sm border-0 p-4 text-center">
             <h3 class="h5">No success stories yet</h3>
             <p class="text-muted mb-3">Start by adding the first featured adoption story.</p>
-            <a asp-action="Create" class="btn btn-primary">Add Story</a>
+            @if (User.IsInRole("Admin"))
+            {
+                <a asp-action="Create" class="btn btn-primary">Add Story</a>
+            }
         </div>
     }
     else
@@ -39,11 +39,9 @@
             var preview = item.Content.Length > 180
             ? item.Content.Substring(0, 180) + "..."
             : item.Content;
-
             var imageUrl = (item.Photos != null && item.Photos.Any())
             ? item.Photos.First().ImgUrl
             : Url.Content("~/images/placeholder-animal.jpg");
-
             <div class="card shadow-sm border-0 story-card mb-4">
                 <div class="row g-0 align-items-stretch">
                     <div class="col-md-4">
@@ -51,7 +49,6 @@
                              class="story-card-img"
                              alt="@item.Title" />
                     </div>
-
                     <div class="col-md-8">
                         <div class="card-body p-4">
                             <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-2">
@@ -61,25 +58,24 @@
                                     </p>
                                     <h3 class="story-title mb-2">@item.Title</h3>
                                 </div>
-
                                 <span class="badge bg-light text-dark border">
                                     @item.Animal?.AnimalType
                                 </span>
                             </div>
-
                             <p class="story-preview text-muted mb-4">@preview</p>
-
                             <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
                                 <a asp-action="Details"
                                    asp-route-id="@item.StoryId"
                                    class="btn btn-outline-primary">
                                     Read Full Story
                                 </a>
-
-                                <div class="small">
-                                    <a asp-action="Edit" asp-route-id="@item.StoryId" class="me-2">Edit</a>
-                                    <a asp-action="Delete" asp-route-id="@item.StoryId" class="text-danger">Delete</a>
-                                </div>
+                                @if (User.IsInRole("Admin"))
+                                {
+                                    <div class="small">
+                                        <a asp-action="Edit" asp-route-id="@item.StoryId" class="me-2">Edit</a>
+                                        <a asp-action="Delete" asp-route-id="@item.StoryId" class="text-danger">Delete</a>
+                                    </div>
+                                }
                             </div>
                         </div>
                     </div>
@@ -87,7 +83,6 @@
             </div>
         }
     }
-
     <section class="cta-panel text-center mt-5">
         <h3 class="mb-2">Ready to meet your future companion?</h3>
         <p class="text-muted mb-3">

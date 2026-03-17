@@ -13,9 +13,10 @@
     </div>
 
     <div class="col-4 text-end">
-        @* TODO: Wrap this in Admin authorization when roles are implemented *@
-        @* Example: if (User.IsInRole("Admin")) *@
-        <a asp-action="Create" class="btn btn-primary">Add New Event</a>
+        @if (User.IsInRole("Admin"))
+        {
+            <a asp-action="Create" class="btn btn-primary">Add New Event</a>
+        }
     </div>
 
 </div>
@@ -88,19 +89,14 @@
                                 <a asp-action="Details" asp-route-id="@item.EventId"
                                    class="btn btn-sm btn-outline-primary">Details</a>
 
-                                @* TODO: Wrap Edit/Delete in Admin role check *@
-                                @* Example:
-                                   if (User.IsInRole("Admin"))
-                                   {
-                                       ...
-                                   }
-                                *@
+                                @if (User.IsInRole("Admin"))
+                                {
+                                    <a asp-action="Edit" asp-route-id="@item.EventId"
+                                       class="btn btn-sm btn-outline-secondary">Edit</a>
 
-                                <a asp-action="Edit" asp-route-id="@item.EventId"
-                                   class="btn btn-sm btn-outline-secondary">Edit</a>
-
-                                <a asp-action="Delete" asp-route-id="@item.EventId"
-                                   class="btn btn-sm btn-outline-danger">Delete</a>
+                                    <a asp-action="Delete" asp-route-id="@item.EventId"
+                                       class="btn btn-sm btn-outline-danger">Delete</a>
+                                }
 
                             </div>
                         </div>
@@ -118,7 +114,9 @@
     <div class="alert alert-info">
         <p>No events found.</p>
 
-        @* TODO: Admin-only action later *@
-        <p><a asp-action="Create">Add your first event</a></p>
+        @if (User.IsInRole("Admin"))
+        {
+            <p><a asp-action="Create">Add your first event</a></p>
+        }
     </div>
 }

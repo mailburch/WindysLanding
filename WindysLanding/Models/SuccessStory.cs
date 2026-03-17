@@ -1,4 +1,3 @@
-using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -13,9 +12,6 @@ namespace WindysLanding.Models
         [Display(Name = "Animal")]
         public int AnimalId { get; set; }
 
-        [Display(Name = "Photo")]
-        public int? PhotoId { get; set; }
-
         [Required]
         [StringLength(200)]
         [Display(Name = "Title")]
@@ -29,10 +25,11 @@ namespace WindysLanding.Models
         [Display(Name = "Date Published")]
         public DateTime DatePublished { get; set; } = DateTime.Now;
 
+        // Navigation Properties
         [ForeignKey("AnimalId")]
         public virtual Animal? Animal { get; set; }
 
-        [ForeignKey("PhotoId")]
-        public virtual Photo? Photo { get; set; }
+        [Display(Name = "Photos")]
+        public virtual ICollection<Photo> Photos { get; set; } = new HashSet<Photo>();
     }
 }

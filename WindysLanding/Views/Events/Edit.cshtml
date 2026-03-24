@@ -4,88 +4,102 @@
     ViewData["Title"] = "Edit Event";
 }
 
-@* TODO: This page should only be accessible to Admin users once authentication is implemented *@
+<div class="events-page">
+    <section class="page-hero text-center">
+        <h1 class="page-title">Edit Event</h1>
+        <p class="page-subtitle">
+            Update the event details, date, link, and photo information below.
+        </p>
+    </section>
 
-<div class="row justify-content-center">
-    <div class="col-md-8 col-lg-6">
-        <div class="text-center mb-4">
-            <h1>Edit Event</h1>
-            <h4 class="text-muted">Update event details</h4>
+    <div class="row justify-content-center">
+        <div class="col-md-10 col-lg-8">
+            <div class="card p-4 p-md-5">
+                <form asp-action="Edit" enctype="multipart/form-data">
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                    <input type="hidden" asp-for="EventId" />
+                    <input type="hidden" asp-for="EventImg" />
+
+                    <div class="mb-3">
+                        <label asp-for="Name" class="form-label"></label>
+                        <input asp-for="Name" class="form-control" />
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Description" class="form-label"></label>
+                        <textarea asp-for="Description" class="form-control" rows="5"></textarea>
+                        <span asp-validation-for="Description" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Date" class="form-label"></label>
+                        <input asp-for="Date"
+                               type="datetime-local"
+                               class="form-control"
+                               value="@Model.Date.ToString("yyyy-MM-ddTHH:mm")" />
+                        <span asp-validation-for="Date" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-4">
+                        <label asp-for="EventUrl" class="form-label"></label>
+                        <input asp-for="EventUrl" class="form-control" />
+                        <span asp-validation-for="EventUrl" class="text-danger"></span>
+                    </div>
+
+                    <div class="content-panel mb-4">
+                        <h3 class="section-title h5 mb-3 text-center">Current Photo</h3>
+
+                        @if (!string.IsNullOrEmpty(Model.EventImg))
+                        {
+                            <div class="text-center">
+                                <img src="@Model.EventImg"
+                                     alt="@Model.Name"
+                                     class="event-detail-img mb-3" />
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="empty-state">
+                                <p class="mb-0">No current photo uploaded.</p>
+                            </div>
+                        }
+
+                        @if (!string.IsNullOrEmpty(Model.EventImg))
+                        {
+                            <div class="form-check mt-3">
+                                <input class="form-check-input"
+                                       type="checkbox"
+                                       id="RemovePhoto"
+                                       name="RemovePhoto"
+                                       value="true" />
+                                <label class="form-check-label" for="RemovePhoto">
+                                    Remove current photo
+                                </label>
+                            </div>
+                        }
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="ImageFile" class="form-label">Upload New Photo</label>
+                        <input type="file"
+                               name="ImageFile"
+                               id="ImageFile"
+                               class="form-control"
+                               accept="image/*" />
+                        <div class="form-text">Leave blank to keep the current photo.</div>
+                        <span class="text-danger">@Html.ValidationMessage("ImageFile")</span>
+                    </div>
+
+                    <div class="d-flex justify-content-center gap-2 mt-4 flex-wrap">
+                        <input type="submit" value="Save Changes" class="btn btn-primary" />
+                        <a asp-action="Details" asp-route-id="@Model.EventId" class="btn btn-outline-primary">View Details</a>
+                        <a asp-action="Index" class="btn btn-outline-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
         </div>
-
-        <form asp-action="Edit" enctype="multipart/form-data">
-            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
-
-            <input type="hidden" asp-for="EventId" />
-            <input type="hidden" asp-for="EventImg" />
-
-            <div class="mb-3">
-                <label asp-for="Name" class="form-label"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
-            </div>
-
-            <div class="mb-3">
-                <label asp-for="Description" class="form-label"></label>
-                <textarea asp-for="Description" class="form-control" rows="4"></textarea>
-                <span asp-validation-for="Description" class="text-danger"></span>
-            </div>
-
-            <div class="mb-3">
-                <label asp-for="Date" class="form-label"></label>
-                <input asp-for="Date" type="datetime-local" class="form-control"
-                       value="@Model.Date.ToString("yyyy-MM-ddTHH:mm")" />
-                <span asp-validation-for="Date" class="text-danger"></span>
-            </div>
-
-            <div class="mb-3">
-                <label asp-for="EventUrl" class="form-label"></label>
-                <input asp-for="EventUrl" class="form-control" />
-                <span asp-validation-for="EventUrl" class="text-danger"></span>
-            </div>
-
-            <div class="mb-3 text-center">
-                <label class="form-label d-block">Current Photo</label>
-
-                @if (!string.IsNullOrEmpty(Model.EventImg))
-                {
-                    <div class="bg-light border rounded d-flex align-items-center justify-content-center p-2" style="height:250px;">
-                        <img src="@Model.EventImg"
-                             alt="@Model.Name"
-                             class="img-fluid"
-                             style="max-height:100%; max-width:100%; object-fit:contain;" />
-                    </div>
-                }
-                else
-                {
-                    <div class="border rounded p-4 text-muted bg-light">
-                        No current photo
-                    </div>
-                }
-            </div>
-
-            @if (!string.IsNullOrEmpty(Model.EventImg))
-            {
-                <div class="form-check mb-3">
-                    <input class="form-check-input" type="checkbox" id="RemovePhoto" name="RemovePhoto" value="true" />
-                    <label class="form-check-label" for="RemovePhoto">
-                        Remove current photo
-                    </label>
-                </div>
-            }
-
-            <div class="mb-3">
-                <label for="ImageFile" class="form-label">Upload New Photo</label>
-                <input type="file" name="ImageFile" id="ImageFile" class="form-control" accept="image/*" />
-                <div class="form-text">Leave blank to keep the current photo.</div>
-                <span class="text-danger">@Html.ValidationMessage("ImageFile")</span>
-            </div>
-
-            <div class="d-flex justify-content-center gap-2 mt-4">
-                <input type="submit" value="Save Changes" class="btn btn-primary" />
-                <a asp-action="Index" class="btn btn-outline-secondary">Cancel</a>
-            </div>
-        </form>
     </div>
 </div>
 

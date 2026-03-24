@@ -4,74 +4,71 @@
     ViewData["Title"] = "Event Details";
 }
 
-<div class="row align-items-center mb-4">
-    <div class="col-4"></div>
+<div class="events-page">
+    <section class="page-hero text-center">
+        <h1 class="page-title">Event Details</h1>
+        <p class="page-subtitle">
+            View event information, timing, description, and related links.
+        </p>
+    </section>
 
-    <div class="col-4 text-center">
-        <h1 class="mb-0">Event Details</h1>
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+        <h2 class="section-title mb-0">@Model.Name</h2>
+
+        <div class="d-flex gap-2 flex-wrap">
+            <a asp-action="Edit" asp-route-id="@Model?.EventId" class="btn btn-primary">Edit Event</a>
+            <a asp-action="Delete" asp-route-id="@Model?.EventId" class="btn btn-outline-danger">Delete Event</a>
+        </div>
     </div>
 
-    <div class="col-4 text-end">
-        @* TODO: Wrap these in Admin authorization when roles are implemented *@
-        <a asp-action="Edit" asp-route-id="@Model?.EventId" class="btn btn-primary me-2">Edit Event</a>
-        <a asp-action="Delete" asp-route-id="@Model?.EventId" class="btn btn-danger">Delete Event</a>
-    </div>
-</div>
-
-<div class="card">
-    <div class="row g-0">
-        <div class="col-md-4">
-            @if (!string.IsNullOrEmpty(Model.EventImg))
-            {
-                <div class="bg-light d-flex align-items-center justify-content-center rounded-start"
-                     style="height:320px;">
+    <div class="card p-4">
+        <div class="row g-4 align-items-stretch">
+            <div class="col-md-5">
+                @if (!string.IsNullOrEmpty(Model.EventImg))
+                {
                     <img src="@Model.EventImg"
                          alt="@Model.Name"
-                         class="img-fluid"
-                         style="max-height:100%; max-width:100%; object-fit:contain;" />
-                </div>
-            }
-            else
-            {
-                <div class="bg-secondary d-flex align-items-center justify-content-center rounded-start"
-                     style="height:320px;">
-                    <span class="text-white">No Photo</span>
-                </div>
-            }
-        </div>
-
-        <div class="col-md-8">
-            <div class="card-body">
-                <h2 class="card-title">@Model.Name</h2>
-
-                <p class="card-text mb-2">
-                    <strong>Date:</strong> @Model.Date.ToString("MMMM d, yyyy")
-                </p>
-
-                <p class="card-text mb-2">
-                    <strong>Time:</strong> @Model.Date.ToString("h:mm tt")
-                </p>
-
-                @if (!string.IsNullOrEmpty(Model.Description))
-                {
-                    <p class="card-text">
-                        <strong>Description:</strong><br />
-                        @Model.Description
-                    </p>
+                         class="event-detail-img" />
                 }
-
-                @if (!string.IsNullOrEmpty(Model.EventUrl))
+                else
                 {
-                    <p class="card-text">
-                        <strong>Event Link:</strong><br />
-                        <a href="@Model.EventUrl" target="_blank">@Model.EventUrl</a>
-                    </p>
+                    <div class="empty-state h-100 d-flex align-items-center justify-content-center">
+                        <span>No Photo Available</span>
+                    </div>
                 }
             </div>
 
-            <div class="card-footer bg-white border-top-0">
-                <div class="btn-group" role="group">
-                    <a asp-action="Index" class="btn btn-sm btn-outline-primary">Back to Events</a>
+            <div class="col-md-7 d-flex flex-column">
+                <div class="card-body px-0 py-0 d-flex flex-column h-100">
+                    <span class="event-date-badge">
+                        @Model.Date.ToString("MMMM d, yyyy")
+                    </span>
+
+                    <h3 class="event-title">@Model.Name</h3>
+
+                    <p class="event-meta mb-2">
+                        <strong>Time:</strong> @Model.Date.ToString("h:mm tt")
+                    </p>
+
+                    @if (!string.IsNullOrEmpty(Model.Description))
+                    {
+                        <div class="content-panel mb-3">
+                            <h4 class="section-title h6 mb-2">Description</h4>
+                            <p class="event-description mb-0">@Model.Description</p>
+                        </div>
+                    }
+
+                    @if (!string.IsNullOrEmpty(Model.EventUrl))
+                    {
+                        <div class="content-panel mb-3">
+                            <h4 class="section-title h6 mb-2">Event Link</h4>
+                            <a href="@Model.EventUrl" target="_blank">@Model.EventUrl</a>
+                        </div>
+                    }
+
+                    <div class="d-flex flex-wrap gap-2 mt-3">
+                        <a asp-action="Index" class="btn btn-outline-primary">Back to Events</a>
+                    </div>
                 </div>
             </div>
         </div>

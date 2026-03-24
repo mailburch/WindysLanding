@@ -4,119 +4,123 @@
     ViewData["Title"] = "Events";
 }
 
-<div class="row align-items-center mb-4">
+<div class="events-page">
+    <section class="page-hero text-center">
+        <h1 class="page-title">Upcoming Events</h1>
+        <p class="page-subtitle">
+            Stay connected with Windy's Landing through upcoming events, gatherings, and special opportunities to support our mission.
+        </p>
+    </section>
 
-    <div class="col-4"></div>
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+        <h2 class="section-title mb-0">Event Listings</h2>
 
-    <div class="col-4 text-center">
-        <h1 class="mb-0">UPCOMING EVENTS</h1>
-    </div>
-
-    <div class="col-4 text-end">
         @if (User.IsInRole("Admin"))
         {
             <a asp-action="Create" class="btn btn-primary">Add New Event</a>
         }
     </div>
 
-</div>
-
-<div class="row">
-    @foreach (var item in Model)
+    @if (Model != null && Model.Any())
     {
-        <div class="col-12 mb-4">
-            <div class="card">
-                <div class="row g-0">
+        <div class="row">
+            @foreach (var item in Model)
+            {
+                var displayImage = item.Photos?.FirstOrDefault()?.ImgUrl ?? item.EventImg;
+                var shortDescription = !string.IsNullOrEmpty(item.Description) && item.Description.Length > 150
+                ? item.Description.Substring(0, 150) + "..."
+                : item.Description;
 
-                    <div class="col-md-3">
-                        @{
-                            var displayImage = item.Photos?.FirstOrDefault()?.ImgUrl
-                            ?? item.EventImg;
-                        }
-
-                        @if (!string.IsNullOrEmpty(displayImage))
-                        {
-                            <div class="bg-light d-flex align-items-center justify-content-center rounded-start" style="height:220px;">
-                                <img src="@displayImage"
-                                     class="img-fluid"
-                                     alt="@item.Name"
-                                     style="max-height:100%; max-width:100%; object-fit:contain;">
-                            </div>
-                        }
-                        else
-                        {
-                            <div class="bg-secondary d-flex align-items-center justify-content-center"
-                                 style="height:220px;">
-                                <span class="text-white">No Photo</span>
-                            </div>
-                        }
-                    </div>
-
-                    <div class="col-md-9">
-                        <div class="card-body">
-
-                            <h4 class="card-title">@item.Name</h4>
-
-                            <p class="card-text mb-1">
-                                <strong>Date:</strong> @item.Date.ToString("MMMM d, yyyy")
-                            </p>
-
-                            <p class="card-text mb-2">
-                                <strong>Time:</strong> @item.Date.ToString("h:mm tt")
-                            </p>
-
-                            @if (!string.IsNullOrEmpty(item.Description))
-                            {
-                                <p class="card-text">
-                                    @(item.Description.Length > 150
-                                        ? item.Description.Substring(0, 150) + "..."
-                                        : item.Description)
-                                </p>
-                            }
-
-                            @if (!string.IsNullOrEmpty(item.EventUrl))
-                            {
-                                <a href="@item.EventUrl" target="_blank" class="btn btn-sm btn-outline-primary">
-                                    Learn More
-                                </a>
-                            }
-
-                        </div>
-
-                        <div class="card-footer bg-white border-top-0">
-                            <div class="btn-group">
-
-                                <a asp-action="Details" asp-route-id="@item.EventId"
-                                   class="btn btn-sm btn-outline-primary">Details</a>
-
-                                @if (User.IsInRole("Admin"))
+                <div class="col-12 mb-4">
+                    <div class="card p-3">
+                        <div class="row g-4 align-items-stretch">
+                            <div class="col-md-4">
+                                @if (!string.IsNullOrEmpty(displayImage))
                                 {
-                                    <a asp-action="Edit" asp-route-id="@item.EventId"
-                                       class="btn btn-sm btn-outline-secondary">Edit</a>
-
-                                    <a asp-action="Delete" asp-route-id="@item.EventId"
-                                       class="btn btn-sm btn-outline-danger">Delete</a>
+                                    <img src="@displayImage"
+                                         class="event-card-img"
+                                         alt="@item.Name" />
                                 }
+                                else
+                                {
+                                    <div class="empty-state h-100 d-flex align-items-center justify-content-center">
+                                        <span>No Photo Available</span>
+                                    </div>
+                                }
+                            </div>
 
+                            <div class="col-md-8 d-flex flex-column">
+                                <div class="card-body px-0 py-0 d-flex flex-column h-100">
+                                    <span class="event-date-badge">
+                                        @item.Date.ToString("MMMM d, yyyy")
+                                    </span>
+
+                                    <h3 class="event-title">@item.Name</h3>
+
+                                    <p class="event-meta mb-2">
+                                        <strong>Date & Time:</strong> @item.Date.ToString("MMMM d, yyyy 'at' h:mm tt")
+                                    </p>
+
+                                    @if (!string.IsNullOrEmpty(shortDescription))
+                                    {
+                                        <p class="event-description flex-grow-1">
+                                            @shortDescription
+                                        </p>
+                                    }
+
+                                    <div class="d-flex flex-wrap gap-2 mt-3">
+                                        <a asp-action="Details"
+                                           asp-route-id="@item.EventId"
+                                           class="btn btn-outline-primary btn-sm">
+                                            Details
+                                        </a>
+
+                                        @if (!string.IsNullOrEmpty(item.EventUrl))
+                                        {
+                                            <a href="@item.EventUrl"
+                                               target="_blank"
+                                               class="btn btn-secondary btn-sm">
+                                                Learn More
+                                            </a>
+                                        }
+
+                                        @if (User.IsInRole("Admin"))
+                                        {
+                                            <a asp-action="Edit"
+                                               asp-route-id="@item.EventId"
+                                               class="btn btn-outline-secondary btn-sm">
+                                                Edit
+                                            </a>
+
+                                            <a asp-action="Delete"
+                                               asp-route-id="@item.EventId"
+                                               class="btn btn-outline-danger btn-sm">
+                                                Delete
+                                            </a>
+                                        }
+                                    </div>
+                                </div>
                             </div>
                         </div>
-
                     </div>
-
                 </div>
-            </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="empty-state">
+            <h3 class="mb-2">No events found</h3>
+
+            @if (User.IsInRole("Admin"))
+            {
+                <p class="mb-3">There are no events yet. Add your first event to get started.</p>
+                <a asp-action="Create" class="btn btn-primary">Add First Event</a>
+            }
+            else
+            {
+                <p class="mb-0">Please check back soon for upcoming events.</p>
+            }
         </div>
     }
 </div>
-
-@if (!Model.Any())
-{
-    <div class="alert alert-info">
-        <p>No events found.</p>
-
-        @if (User.IsInRole("Admin"))
-        {
-            <p><a asp-action="Create">Add your first event</a></p>
-        }
-    </div>
-}

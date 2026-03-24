@@ -396,3 +396,93 @@ a {
 .events-page .event-description {
     line-height: 1.7;
 }
+
+/* =========================
+   DONATIONS
+========================= */
+
+.donations-page .donation-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.25rem;
+}
+
+.donations-page .donation-card {
+    height: 100%;
+}
+
+    .donations-page .donation-card .card-body {
+        padding: 1.5rem 1rem;
+    }
+
+.donations-page .donation-icon {
+    width: 72px;
+    height: 72px;
+    object-fit: contain;
+    display: block;
+    margin: 0 auto;
+}
+
+.donations-page .donation-card h3,
+.donations-page .donation-highlight h3,
+.donations-page .donation-method-grid h3 {
+    color: var(--wl-animals);
+    font-weight: 800;
+}
+
+.donations-page .donation-card p,
+.donations-page .donation-highlight p,
+.donations-page .donation-method-grid p,
+.donations-page .donation-address {
+    color: var(--wl-text);
+    line-height: 1.7;
+}
+
+.donations-page .donation-highlight {
+    background-color: #fffdf9;
+    border: 2px solid var(--wl-inner-circle);
+    border-radius: 20px;
+    padding: 2rem 1.5rem;
+    box-shadow: var(--wl-shadow);
+}
+
+.donations-page .donation-method-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1.25rem;
+}
+
+    .donations-page .donation-method-grid .card {
+        height: 100%;
+    }
+
+.donations-page .donation-links {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 1.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.75rem 1.5rem;
+}
+
+    .donations-page .donation-links li {
+        margin: 0;
+    }
+
+    .donations-page .donation-links a {
+        font-weight: 600;
+        text-decoration: none;
+        border-bottom: 1px solid transparent;
+        padding-bottom: 2px;
+    }
+
+        .donations-page .donation-links a:hover {
+            border-bottom-color: var(--wl-animals);
+        }
+
+@media (max-width: 767.98px) {
+    .donations-page .donation-highlight {
+        padding: 1.5rem 1rem;
+    }
+}

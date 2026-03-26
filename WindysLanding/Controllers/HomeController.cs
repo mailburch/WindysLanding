@@ -1,5 +1,5 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 using WindysLanding.Models;
 using WindysLanding.Services;
@@ -26,14 +26,24 @@ namespace WindysLanding.Controllers
 
             var model = new ContactPageViewModel();
 
+            // Prefill email if logged in
+            if (User?.Identity?.IsAuthenticated == true)
+            {
+                model.ContactForm.Email = User.FindFirst(System.Security.Claims.ClaimTypes.Email)?.Value ?? "";
+            }
+
             return View(model);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public IActionResult Contact(ContactPageViewModel model)
         {
             ViewBag.ContactInfo = _context.ContactInfos.FirstOrDefault();
+
+            // Override email with authenticated user's email (prevent spoofing)
+            model.ContactForm.Email = User.FindFirst(System.Security.Claims.ClaimTypes.Email)?.Value ?? "";
 
             ModelState.Clear();
             TryValidateModel(model.ContactForm, nameof(ContactPageViewModel.ContactForm));
@@ -82,8 +92,6 @@ namespace WindysLanding.Controllers
             }
         }
 
-
-
         public IActionResult Index()
         {
             return View();
@@ -93,7 +101,6 @@ namespace WindysLanding.Controllers
         {
             return View();
         }
-
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

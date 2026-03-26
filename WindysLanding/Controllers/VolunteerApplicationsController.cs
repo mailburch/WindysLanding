@@ -22,7 +22,6 @@ namespace WindysLanding.Controllers
         }
 
         // GET: VolunteerApplications/Details/5 (ADMIN ONLY)
-        // GET: VolunteerApplications/Details/5 (ADMIN ONLY)
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Details(int? id)
         {
@@ -44,24 +43,29 @@ namespace WindysLanding.Controllers
         // GET: VolunteerApplications/Create
         public IActionResult Create()
         {
-            // TODO (Google Auth milestone):
-            // - If User is authenticated, prefill Name/Email from claims and pass a prefilled model to the View.
-            // - When auth is enforced, add [Authorize] to Create GET + POST (or controller).
+            // If user is logged in, prefill their email (but not name)
+            var model = new VolunteerApplication();
 
-            return View();
+            if (User.Identity?.IsAuthenticated == true)
+            {
+                model.Email = User.FindFirst(System.Security.Claims.ClaimTypes.Email)?.Value ?? "";
+            }
+
+            return View(model);
         }
 
-        // POST: VolunteerApplications/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        // POST: VolunteerApplications/Create
+        // POST: VolunteerApplications/Create (REQUIRE LOGIN)
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Name,Email,Phone,VolunteerDescription,WaiverSigned")] VolunteerApplication volunteerApplication)
+        [Authorize]
+        public async Task<IActionResult> Create([Bind("Name,Phone,VolunteerDescription,WaiverSigned")] VolunteerApplication volunteerApplication)
         {
             if (ModelState.IsValid)
             {
-                // These are not on the public form — set them server-side.
+                // Override email with authenticated user's email (prevent spoofing)
+                volunteerApplication.Email = User.FindFirst(System.Security.Claims.ClaimTypes.Email)?.Value ?? "";
+
+                // Set server-side fields
                 volunteerApplication.ApplicationDate = DateTime.Now;
 
                 if (volunteerApplication.WaiverSigned)
@@ -72,10 +76,6 @@ namespace WindysLanding.Controllers
                 {
                     volunteerApplication.WaiverSignedDate = null;
                 }
-
-                // TODO (Google Auth milestone):
-                // - Overwrite volunteerApplication.Name and volunteerApplication.Email from authenticated user claims
-                //   before saving (prevents spoofing).
 
                 _context.Add(volunteerApplication);
                 await _context.SaveChangesAsync();
@@ -106,9 +106,6 @@ namespace WindysLanding.Controllers
             return View(volunteerApplication);
         }
 
-        // POST: VolunteerApplications/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         // POST: VolunteerApplications/Edit/5 (ADMIN ONLY)
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -124,26 +121,6 @@ namespace WindysLanding.Controllers
             {
                 try
                 {
-                    // Prevent the application date from being changed via Edit form:
-                    // Pull original from DB and keep it.
-                    var existing = await _context.VolunteerApplications.AsNoTracking()
-                        .FirstOrDefaultAsync(v => v.ApplicationId == id);
-
-                    if (existing == null)
-                        return NotFound();
-
-                    volunteerApplication.ApplicationDate = existing.ApplicationDate;
-
-                    // Keeps waiver date consistent
-                    if (volunteerApplication.WaiverSigned)
-                    {
-                        volunteerApplication.WaiverSignedDate ??= DateTime.Now;
-                    }
-                    else
-                    {
-                        volunteerApplication.WaiverSignedDate = null;
-                    }
-
                     _context.Update(volunteerApplication);
                     await _context.SaveChangesAsync();
                 }

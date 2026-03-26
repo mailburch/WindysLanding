@@ -9,7 +9,7 @@
     <div class="container">
         <h1 class="page-title">Contact Us</h1>
         <p class="page-subtitle">
-            Questions about adoption, volunteering, donations, or sponsorship? We’d love to hear from you.
+            Questions about adoption, volunteering, donations, or sponsorship? We'd love to hear from you.
         </p>
     </div>
 </section>
@@ -95,49 +95,72 @@
                         </p>
                     </div>
 
-                    <form asp-controller="Home" asp-action="Contact" method="post">
-                        @Html.AntiForgeryToken()
+                    @if (User?.Identity?.IsAuthenticated == true)
+                    {
+                        <form asp-controller="Home" asp-action="Contact" method="post">
+                            @Html.AntiForgeryToken()
 
-                        <div asp-validation-summary="All" class="text-danger mb-3"></div>
+                            <div asp-validation-summary="All" class="text-danger mb-3"></div>
 
-                        <div class="row g-3">
-                            <div class="col-md-6">
-                                <label asp-for="ContactForm.Name" class="form-label"></label>
-                                <input asp-for="ContactForm.Name" class="form-control" />
-                                <span asp-validation-for="ContactForm.Name" class="text-danger"></span>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label asp-for="ContactForm.Name" class="form-label"></label>
+                                    <input asp-for="ContactForm.Name" class="form-control" />
+                                    <span asp-validation-for="ContactForm.Name" class="text-danger"></span>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label asp-for="ContactForm.Phone" class="form-label"></label>
+                                    <input asp-for="ContactForm.Phone" class="form-control" />
+                                    <span asp-validation-for="ContactForm.Phone" class="text-danger"></span>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label asp-for="ContactForm.Email" class="form-label"></label>
+                                    <input asp-for="ContactForm.Email" class="form-control" value="@User.FindFirst(System.Security.Claims.ClaimTypes.Email)?.Value" readonly />
+                                    <small class="text-muted">From your Google account</small>
+                                    <span asp-validation-for="ContactForm.Email" class="text-danger"></span>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label asp-for="ContactForm.Subject" class="form-label"></label>
+                                    <input asp-for="ContactForm.Subject" class="form-control" />
+                                    <span asp-validation-for="ContactForm.Subject" class="text-danger"></span>
+                                </div>
+
+                                <div class="col-12">
+                                    <label asp-for="ContactForm.Message" class="form-label"></label>
+                                    <textarea asp-for="ContactForm.Message" class="form-control" rows="7"></textarea>
+                                    <span asp-validation-for="ContactForm.Message" class="text-danger"></span>
+                                </div>
                             </div>
 
-                            <div class="col-md-6">
-                                <label asp-for="ContactForm.Phone" class="form-label"></label>
-                                <input asp-for="ContactForm.Phone" class="form-control" />
-                                <span asp-validation-for="ContactForm.Phone" class="text-danger"></span>
+                            <div class="mt-4">
+                                <button type="submit" class="btn btn-primary px-4">
+                                    Send Message
+                                </button>
                             </div>
-
-                            <div class="col-md-6">
-                                <label asp-for="ContactForm.Email" class="form-label"></label>
-                                <input asp-for="ContactForm.Email" class="form-control" />
-                                <span asp-validation-for="ContactForm.Email" class="text-danger"></span>
+                        </form>
+                    }
+                    else
+                    {
+                        <div class="text-center py-5">
+                            <div class="mb-4">
+                                <i class="bi bi-lock" style="font-size: 3rem; color: #6c757d;"></i>
                             </div>
-
-                            <div class="col-md-6">
-                                <label asp-for="ContactForm.Subject" class="form-label"></label>
-                                <input asp-for="ContactForm.Subject" class="form-control" />
-                                <span asp-validation-for="ContactForm.Subject" class="text-danger"></span>
-                            </div>
-
-                            <div class="col-12">
-                                <label asp-for="ContactForm.Message" class="form-label"></label>
-                                <textarea asp-for="ContactForm.Message" class="form-control" rows="7"></textarea>
-                                <span asp-validation-for="ContactForm.Message" class="text-danger"></span>
-                            </div>
+                            <h4 class="mb-3">Sign In Required</h4>
+                            <p class="text-muted mb-4">
+                                Please sign in with Google to send us a message.
+                                This helps us verify your identity and reduces spam.
+                            </p>
+                            <a asp-controller="Account"
+                               asp-action="Login"
+                               asp-route-returnUrl="@Url.Action("Contact", "Home")"
+                               class="btn btn-primary btn-lg">
+                                <i class="bi bi-google"></i> Sign in with Google
+                            </a>
                         </div>
-
-                        <div class="mt-4">
-                            <button type="submit" class="btn btn-primary px-4">
-                                Send Message
-                            </button>
-                        </div>
-                    </form>
+                    }
                 </div>
             </div>
         </div>

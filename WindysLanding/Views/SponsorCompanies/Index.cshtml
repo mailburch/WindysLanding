@@ -1,52 +1,86 @@
 @model IEnumerable<WindysLanding.Models.SponsorCompany>
+
 @{
     ViewData["Title"] = "Manage Sponsors";
 }
 
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h1>Manage Sponsors</h1>
-    <a asp-action="Create" class="btn btn-primary">Add New Sponsor</a>
-</div>
+<div class="sponsors-page container py-4">
 
-<div class="row">
-    @foreach (var sponsor in Model)
-    {
-        <div class="col-md-4 mb-4">
-            <div class="card h-100">
-                @if (sponsor.Photos != null && sponsor.Photos.Any())
-                {
-                    <img src="@sponsor.Photos.First().ImgUrl" class="card-img-top" alt="@sponsor.Name" style="height: 200px; object-fit: contain; padding: 20px; background: #f8f9fa;" />
-                }
-                else
-                {
-                    <img src="/images/placeholder-logo.png" class="card-img-top" alt="No logo" style="height: 200px; object-fit: contain; padding: 20px; background: #f8f9fa;" />
-                }
+    <section class="page-hero">
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+            <div>
+                <h1 class="page-title mb-2">Manage Sponsors</h1>
+                <p class="page-subtitle mb-0">
+                    Add, review, and manage sponsor information shown on the site.
+                </p>
+            </div>
 
-                <div class="card-body">
-                    <h5 class="card-title">@sponsor.Name</h5>
-
-                    @if (!string.IsNullOrEmpty(sponsor.Description))
-                    {
-                        <p class="card-text">
-                            <small>@(sponsor.Description.Length > 100 ? sponsor.Description.Substring(0, 100) + "..." : sponsor.Description)</small>
-                        </p>
-                    }
-                </div>
-
-                <div class="card-footer">
-                    <div class="btn-group w-100" role="group">
-                        <a asp-action="Edit" asp-route-id="@sponsor.SponsorCompanyId" class="btn btn-sm btn-outline-secondary">Edit</a>
-                        <a asp-action="Delete" asp-route-id="@sponsor.SponsorCompanyId" class="btn btn-sm btn-outline-danger">Delete</a>
-                    </div>
-                </div>
+            <div>
+                <a asp-action="Create" class="btn btn-primary">Add New Sponsor</a>
             </div>
         </div>
-    }
-</div>
+    </section>
 
-@if (!Model.Any())
-{
-    <div class="alert alert-info">
-        <p>No sponsors yet. <a asp-action="Create">Add your first sponsor</a></p>
-    </div>
-}
+    @if (Model.Any())
+    {
+        <section class="content-panel">
+            <div class="sponsor-grid sponsor-manage-grid">
+                @foreach (var sponsor in Model)
+                {
+                    <div class="card sponsor-card sponsor-manage-card">
+                        <div class="card-body text-center">
+                            @if (sponsor.Photos != null && sponsor.Photos.Any())
+                            {
+                                <img src="@sponsor.Photos.First().ImgUrl"
+                                     alt="@sponsor.Name"
+                                     class="sponsor-logo" />
+                            }
+                            else
+                            {
+                                <img src="/images/placeholder-logo.png"
+                                     alt="No logo available"
+                                     class="sponsor-logo" />
+                            }
+
+                            <h2 class="h5 sponsor-name">@sponsor.Name</h2>
+
+                            @if (!string.IsNullOrWhiteSpace(sponsor.Description))
+                            {
+                                <p class="sponsor-description sponsor-description-trim mb-0">
+                                    @(sponsor.Description.Length > 100
+                                                            ? sponsor.Description.Substring(0, 100) + "..."
+                                                            : sponsor.Description)
+                                </p>
+                            }
+                        </div>
+
+                        <div class="card-footer sponsor-card-footer">
+                            <div class="d-flex gap-2">
+                                <a asp-action="Edit"
+                                   asp-route-id="@sponsor.SponsorCompanyId"
+                                   class="btn btn-outline-secondary flex-fill">
+                                    Edit
+                                </a>
+
+                                <a asp-action="Delete"
+                                   asp-route-id="@sponsor.SponsorCompanyId"
+                                   class="btn btn-outline-danger flex-fill">
+                                    Delete
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </section>
+    }
+    else
+    {
+        <section class="empty-state">
+            <h2 class="h4 mb-3">No sponsors yet</h2>
+            <p class="mb-3">Add your first sponsor to start building the sponsor page.</p>
+            <a asp-action="Create" class="btn btn-primary">Add Sponsor</a>
+        </section>
+    }
+
+</div>

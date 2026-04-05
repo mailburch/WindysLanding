@@ -4,246 +4,258 @@
     ViewData["Title"] = Model.Name;
 }
 
-<div class="row">
-    <div class="col-md-8">
-        <h1>@Model.Name</h1>
+<div class="animals-page container py-4">
 
-        @if (TempData["SuccessMessage"] != null)
-        {
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                @TempData["SuccessMessage"]
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            </div>
-        }
+    <section class="page-hero text-center">
+        <h1 class="page-title">@Model.Name</h1>
+        <p class="page-subtitle">Learn more about this animal and next steps for adoption.</p>
+    </section>
 
-        @if (TempData["ErrorMessage"] != null)
-        {
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                @TempData["ErrorMessage"]
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            </div>
-        }
-
-        <!-- Photos Carousel -->
-        @if (Model.Photos != null && Model.Photos.Any())
-        {
-            var carouselId = "carousel-details";
-            <div id="@carouselId" class="carousel slide mb-4" data-bs-ride="false">
-                <div class="carousel-inner">
-                    @{
-                        var photoIndex = 0;
-                        foreach (var photo in Model.Photos)
-                        {
-                            var activeClass = photoIndex == 0 ? "active" : "";
-                            <div class="carousel-item @activeClass">
-                                <img src="@photo.ImgUrl" class="d-block w-100" alt="@Model.Name" style="height: 400px; object-fit: cover;">
-                            </div>
-                            photoIndex++;
-                        }
-                    }
+    <div class="animal-detail-layout">
+        <div>
+            @if (TempData["SuccessMessage"] != null)
+            {
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    @TempData["SuccessMessage"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                 </div>
+            }
 
-                @if (Model.Photos.Count() > 1)
-                {
-                    <button class="carousel-control-prev" type="button" data-bs-target="#@carouselId" data-bs-slide="prev">
-                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden">Previous</span>
-                    </button>
-                    <button class="carousel-control-next" type="button" data-bs-target="#@carouselId" data-bs-slide="next">
-                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden">Next</span>
-                    </button>
+            @if (TempData["ErrorMessage"] != null)
+            {
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    @TempData["ErrorMessage"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            }
 
-                    <div class="carousel-indicators">
-                        @for (var i = 0; i < Model.Photos.Count(); i++)
-                        {
-                            var activeIndicator = i == 0 ? "active" : "";
-                            <button type="button" data-bs-target="#@carouselId" data-bs-slide-to="@i" class="@activeIndicator" aria-current="@(i == 0 ? "true" : "false")"></button>
+            @if (Model.Photos != null && Model.Photos.Any())
+            {
+                var carouselId = "carousel-details";
+                <div id="@carouselId" class="carousel slide mb-4" data-bs-ride="false">
+                    <div class="carousel-inner">
+                        @{
+                            var photoIndex = 0;
+                            foreach (var photo in Model.Photos)
+                            {
+                                var activeClass = photoIndex == 0 ? "active" : "";
+                                <div class="carousel-item @activeClass">
+                                    <img src="@photo.ImgUrl" class="animal-detail-img" alt="@Model.Name">
+                                </div>
+                                photoIndex++;
+                            }
                         }
                     </div>
-                }
-            </div>
-        }
-        else
-        {
-            <img src="/images/placeholder-animal.jpg" class="img-fluid mb-4" alt="No photos" style="width: 100%; height: 400px; object-fit: cover;" />
-        }
 
-        <!-- Animal Info -->
-        <div class="card mb-4">
-            <div class="card-body">
-                <dl class="row mb-0">
-                    <dt class="col-sm-3">Type</dt>
-                    <dd class="col-sm-9">@Model.AnimalType</dd>
+                    @if (Model.Photos.Count() > 1)
+                    {
+                        <button class="carousel-control-prev" type="button" data-bs-target="#@carouselId" data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Previous</span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#@carouselId" data-bs-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Next</span>
+                        </button>
 
-                    <dt class="col-sm-3">Age</dt>
-                    <dd class="col-sm-9">@(Model.Age.HasValue? Model.Age + " years" : "Unknown")</dd>
+                        <div class="carousel-indicators">
+                            @for (var i = 0; i < Model.Photos.Count(); i++)
+                            {
+                                var activeIndicator = i == 0 ? "active" : "";
+                                <button type="button" data-bs-target="#@carouselId" data-bs-slide-to="@i" class="@activeIndicator" aria-current="@(i == 0 ? "true" : "false")"></button>
+                            }
+                        </div>
+                    }
+                </div>
+            }
+            else
+            {
+                <img src="/images/placeholder-animal.jpg" class="animal-detail-img mb-4" alt="No photos" />
+            }
+
+            <section class="content-panel mb-4">
+                <dl class="animal-details-list mb-0">
+                    <div class="animal-details-row">
+                        <dt>Type</dt>
+                        <dd>@Model.AnimalType</dd>
+                    </div>
+                    <div class="animal-details-row">
+                        <dt>Age</dt>
+                        <dd>@(Model.Age.HasValue? Model.Age + " years" : "Unknown")</dd>
+                    </div>
 
                     @if (!string.IsNullOrEmpty(Model.Gender))
                     {
-                        <dt class="col-sm-3">Gender</dt>
-                        <dd class="col-sm-9">@Model.Gender</dd>
+                        <div class="animal-details-row">
+                            <dt>Gender</dt>
+                            <dd>@Model.Gender</dd>
+                        </div>
                     }
 
                     @if (!string.IsNullOrEmpty(Model.Breed))
                     {
-                        <dt class="col-sm-3">Breed</dt>
-                        <dd class="col-sm-9">@Model.Breed</dd>
+                        <div class="animal-details-row">
+                            <dt>Breed</dt>
+                            <dd>@Model.Breed</dd>
+                        </div>
                     }
 
                     @if (!string.IsNullOrEmpty(Model.Size))
                     {
-                        <dt class="col-sm-3">Size</dt>
-                        <dd class="col-sm-9">@Model.Size</dd>
+                        <div class="animal-details-row">
+                            <dt>Size</dt>
+                            <dd>@Model.Size</dd>
+                        </div>
                     }
 
                     @if (!string.IsNullOrEmpty(Model.Color))
                     {
-                        <dt class="col-sm-3">Color</dt>
-                        <dd class="col-sm-9">@Model.Color</dd>
-                    }
-
-                    <dt class="col-sm-3">Status</dt>
-                    <dd class="col-sm-9">
-                        @if (Model.AdoptionStatus)
-                        {
-                            <span class="badge bg-success">Adopted</span>
-                        }
-                        else
-                        {
-                            <span class="badge bg-primary">Available for Adoption</span>
-                        }
-                    </dd>
-
-                    @if (!string.IsNullOrEmpty(Model.Experience))
-                    {
-                        <dt class="col-sm-3">Experience Level</dt>
-                        <dd class="col-sm-9">@Model.Experience</dd>
-                    }
-                </dl>
-            </div>
-        </div>
-
-        <!-- Description -->
-        @if (!string.IsNullOrEmpty(Model.Description))
-        {
-            <div class="card mb-4">
-                <div class="card-header">
-                    <h4 class="mb-0">About @Model.Name</h4>
-                </div>
-                <div class="card-body">
-                    <p style="white-space: pre-line;">@Model.Description</p>
-                </div>
-            </div>
-        }
-    </div>
-
-    <div class="col-md-4">
-        <!-- Adoption Inquiry Form -->
-        @if (!Model.AdoptionStatus)
-        {
-            <div class="card mb-3">
-                <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0">Interested in Adopting @Model.Name?</h5>
-                </div>
-                <div class="card-body">
-                    @if (User.Identity?.IsAuthenticated == true)
-                    {
-                        <form asp-controller="AdoptionInquiry" asp-action="Submit" method="post">
-                            <input type="hidden" name="AnimalId" value="@Model.AnimalId" />
-                            <input type="hidden" name="AnimalName" value="@Model.Name" />
-
-                            <div class="mb-3">
-                                <label class="form-label">Your Name</label>
-                                <input type="text" name="Name" class="form-control" value="@User.Identity.Name" readonly />
-                                <small class="text-muted">From your Google account</small>
-                            </div>
-
-                            <div class="mb-3">
-                                <label class="form-label">Your Email</label>
-                                <input type="email" name="Email" class="form-control" value="@User.FindFirst(System.Security.Claims.ClaimTypes.Email)?.Value" readonly />
-                                <small class="text-muted">From your Google account</small>
-                            </div>
-
-                            <div class="mb-3">
-                                <label class="form-label">Phone Number *</label>
-                                <input type="tel" name="Phone" class="form-control" required />
-                            </div>
-
-                            <div class="mb-3">
-                                <label class="form-label">Message</label>
-                                <textarea name="Message" class="form-control" rows="4" placeholder="Tell us why you'd like to adopt @Model.Name..."></textarea>
-                            </div>
-
-                            <button type="submit" class="btn btn-primary w-100">Send Inquiry</button>
-                        </form>
-                    }
-                    else
-                    {
-                        <div class="text-center py-4">
-                            <p class="mb-3">Please sign in with Google to submit an adoption inquiry.</p>
-                            <a asp-controller="Account" asp-action="Login" asp-route-returnUrl="@Url.Action("Details", "Animals", new { id = Model.AnimalId })" class="btn btn-primary btn-lg">
-                                <i class="bi bi-google"></i> Sign in with Google
-                            </a>
+                        <div class="animal-details-row">
+                            <dt>Color</dt>
+                            <dd>@Model.Color</dd>
                         </div>
                     }
 
-                    <hr />
+                    <div class="animal-details-row">
+                        <dt>Status</dt>
+                        <dd>
+                            @if (Model.AdoptionStatus)
+                            {
+                                <span class="badge bg-success">Adopted</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-primary">Available for Adoption</span>
+                            }
+                        </dd>
+                    </div>
 
-                    <p class="mb-0 small">
-                        <strong>Or contact us directly:</strong><br />
-                        Phone: (231) 555-1234<br />
-                        Email: contact@windyslanding.org
-                    </p>
-                </div>
-            </div>
+                    @if (!string.IsNullOrEmpty(Model.Experience))
+                    {
+                        <div class="animal-details-row">
+                            <dt>Experience Level</dt>
+                            <dd>@Model.Experience</dd>
+                        </div>
+                    }
+                </dl>
+            </section>
 
-            @if (Model.SponsorshipAvailable)
+            @if (!string.IsNullOrEmpty(Model.Description))
             {
-                <div class="card mb-3">
+                <div class="card mb-4">
                     <div class="card-header">
-                        <h5 class="mb-0">Sponsorship Available</h5>
+                        <h4 class="mb-0">About @Model.Name</h4>
                     </div>
                     <div class="card-body">
-                        @if (!string.IsNullOrEmpty(Model.SponsorshipUrl))
-                        {
-                            <a href="@Model.SponsorshipUrl" target="_blank" class="btn btn-outline-primary w-100">Sponsor @Model.Name</a>
-                        }
-                        else
-                        {
-                            <p class="mb-0">Contact us to sponsor @Model.Name monthly</p>
-                        }
+                        <p class="animal-description mb-0" style="white-space: pre-line;">@Model.Description</p>
                     </div>
                 </div>
             }
-        }
+        </div>
 
-        <!-- Adoption Process -->
-        @if (!Model.AdoptionStatus)
-        {
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="mb-0">Adoption Process</h5>
+        <div>
+            @if (!Model.AdoptionStatus)
+            {
+                <div class="card mb-3">
+                    <div class="card-header">
+                        <h5 class="mb-0">Interested in Adopting @Model.Name?</h5>
+                    </div>
+                    <div class="card-body">
+                        @if (User.Identity?.IsAuthenticated == true)
+                        {
+                            <form asp-controller="AdoptionInquiry" asp-action="Submit" method="post">
+                                <input type="hidden" name="AnimalId" value="@Model.AnimalId" />
+                                <input type="hidden" name="AnimalName" value="@Model.Name" />
+
+                                <div class="mb-3">
+                                    <label class="form-label">Your Name</label>
+                                    <input type="text" name="Name" class="form-control" value="@User.Identity.Name" readonly />
+                                    <small class="text-muted">From your Google account</small>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">Your Email</label>
+                                    <input type="email" name="Email" class="form-control" value="@User.FindFirst(System.Security.Claims.ClaimTypes.Email)?.Value" readonly />
+                                    <small class="text-muted">From your Google account</small>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">Phone Number *</label>
+                                    <input type="tel" name="Phone" class="form-control" required />
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">Message</label>
+                                    <textarea name="Message" class="form-control" rows="4" placeholder="Tell us why you'd like to adopt @Model.Name..."></textarea>
+                                </div>
+
+                                <button type="submit" class="btn btn-primary w-100">Send Inquiry</button>
+                            </form>
+                        }
+                        else
+                        {
+                            <div class="text-center py-4">
+                                <p class="mb-3">Please sign in with Google to submit an adoption inquiry.</p>
+                                <a asp-controller="Account" asp-action="Login" asp-route-returnUrl="@Url.Action("Details", "Animals", new { id = Model.AnimalId })" class="btn btn-primary">
+                                    Sign in with Google
+                                </a>
+                            </div>
+                        }
+
+                        <hr />
+
+                        <p class="mb-0 small">
+                            <strong>Or contact us directly:</strong><br />
+                            Phone: (231) 555-1234<br />
+                            Email: contact@windyslanding.org
+                        </p>
+                    </div>
                 </div>
-                <div class="card-body">
-                    <ol class="ps-3 mb-0">
-                        <li>Submit inquiry form</li>
-                        <li>Schedule a visit</li>
-                        <li>Complete application</li>
-                        <li>Home visit</li>
-                        <li>Take them home!</li>
-                    </ol>
+
+                @if (Model.SponsorshipAvailable)
+                {
+                    <div class="card mb-3">
+                        <div class="card-header">
+                            <h5 class="mb-0">Sponsorship Available</h5>
+                        </div>
+                        <div class="card-body">
+                            @if (!string.IsNullOrEmpty(Model.SponsorshipUrl))
+                            {
+                                <a href="@Model.SponsorshipUrl" target="_blank" class="btn btn-outline-primary w-100">Sponsor @Model.Name</a>
+                            }
+                            else
+                            {
+                                <p class="mb-0">Contact us to sponsor @Model.Name monthly</p>
+                            }
+                        </div>
+                    </div>
+                }
+
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">Adoption Process</h5>
+                    </div>
+                    <div class="card-body">
+                        <ol class="ps-3 mb-0">
+                            <li>Submit inquiry form</li>
+                            <li>Schedule a visit</li>
+                            <li>Complete application</li>
+                            <li>Home visit</li>
+                            <li>Take them home!</li>
+                        </ol>
+                    </div>
                 </div>
-            </div>
-        }
+            }
+        </div>
     </div>
-</div>
 
-<div class="mt-3">
-    @if (User.IsInRole("Admin"))
-    {
-        <a asp-action="Edit" asp-route-id="@Model.AnimalId" class="btn btn-secondary">Edit</a>
-        <a asp-action="Index" class="btn btn-secondary">Back to List</a>
-    }
-    <a asp-action="Adoption" class="btn btn-primary">View All Available Animals</a>
+    <div class="mt-4 d-flex flex-wrap gap-2">
+        @if (User.IsInRole("Admin"))
+        {
+            <a asp-action="Edit" asp-route-id="@Model.AnimalId" class="btn btn-outline-secondary">Edit</a>
+            <a asp-action="Index" class="btn btn-outline-secondary">Back to List</a>
+        }
+        <a asp-action="Adoption" class="btn btn-primary">View All Available Animals</a>
+    </div>
+
 </div>

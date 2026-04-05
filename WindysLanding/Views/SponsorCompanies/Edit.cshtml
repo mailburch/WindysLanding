@@ -4,102 +4,122 @@
     ViewData["Title"] = "Edit Sponsor";
 }
 
-<h1>Edit: @Model.Name</h1>
+<div class="sponsors-page container py-4">
 
-<hr />
+    <section class="page-hero text-center">
+        <h1 class="page-title">Edit Sponsor</h1>
+        <p class="page-subtitle">
+            Update sponsor details and manage the company logo for @Model.Name.
+        </p>
+    </section>
 
-<div class="row">
-    <div class="col-md-8">
-        <div class="card mb-4">
-            <div class="card-header">
-                <h4 class="mb-0">Sponsor Information</h4>
-            </div>
-            <div class="card-body">
-                <form asp-action="Edit" method="post">
-                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                    <input type="hidden" asp-for="SponsorCompanyId" />
+    <div class="sponsor-edit-layout">
 
-                    <div class="form-group mb-3">
-                        <label asp-for="Name" class="control-label"></label>
-                        <input asp-for="Name" class="form-control" />
-                        <span asp-validation-for="Name" class="text-danger"></span>
-                    </div>
+        <section class="content-panel sponsor-form-panel">
+            <h2 class="section-title mb-4">Sponsor Information</h2>
 
-                    <div class="form-group mb-3">
-                        <label asp-for="Description" class="control-label"></label>
-                        <textarea asp-for="Description" class="form-control" rows="3" placeholder="Optional description or website URL..."></textarea>
-                        <span asp-validation-for="Description" class="text-danger"></span>
-                    </div>
+            <form asp-action="Edit" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                <input type="hidden" asp-for="SponsorCompanyId" />
 
+                <div class="mb-3">
+                    <label asp-for="Name" class="form-label"></label>
+                    <input asp-for="Name" class="form-control" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+
+                <div class="mb-4">
+                    <label asp-for="Description" class="form-label"></label>
+                    <textarea asp-for="Description"
+                              class="form-control"
+                              rows="4"
+                              placeholder="Optional description or website URL..."></textarea>
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                </div>
+
+                <div class="d-flex flex-wrap gap-2">
                     <button type="submit" class="btn btn-primary">Save Changes</button>
-                    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+                    <a asp-action="Index" class="btn btn-outline-secondary">Cancel</a>
+                </div>
+            </form>
+        </section>
+
+        <section class="content-panel">
+            <h2 class="section-title mb-4">Logo</h2>
+
+            @if (Model.Photos != null && Model.Photos.Any())
+            {
+                var logo = Model.Photos.First();
+
+                <div class="sponsor-current-logo mb-3">
+                    <img src="@logo.ImgUrl" alt="@Model.Name" class="sponsor-logo-preview-img" />
+                </div>
+
+                <form asp-action="DeleteLogo" asp-route-id="@logo.PhotoId" method="post" class="mb-4">
+                    <button type="submit"
+                            class="btn btn-outline-danger w-100"
+                            onclick="return confirm('Delete this logo?');">
+                        Delete Logo
+                    </button>
                 </form>
-            </div>
-        </div>
+            }
+            else
+            {
+                <div class="sponsor-no-logo mb-4">
+                    <img src="/images/placeholder-logo.png" alt="No logo" class="sponsor-logo-preview-img" />
+                    <p class="mb-0">No logo uploaded</p>
+                </div>
+            }
+
+            <form asp-action="Edit" method="post" enctype="multipart/form-data">
+                <input type="hidden" asp-for="SponsorCompanyId" />
+                <input type="hidden" asp-for="Name" />
+                <input type="hidden" asp-for="Description" />
+
+                <div class="card sponsor-upload-card">
+                    <div class="card-header">
+                        @(Model.Photos != null && Model.Photos.Any() ? "Replace Logo" : "Upload Logo")
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label for="logoInput" class="form-label">Choose Logo File</label>
+                            <input type="file" name="logo" accept="image/*" class="form-control" id="logoInput" required />
+                            <div class="form-text">PNG or JPG, max 5MB.</div>
+                        </div>
+
+                        <div id="logoPreview" class="sponsor-logo-preview-empty mb-3"></div>
+
+                        <button type="submit" class="btn btn-primary w-100">Upload Logo</button>
+                    </div>
+                </div>
+            </form>
+        </section>
+
     </div>
 
-    <div class="col-md-4">
-        <div class="card mb-4">
-            <div class="card-header">
-                <h4 class="mb-0">Logo</h4>
-            </div>
-            <div class="card-body">
-                @if (Model.Photos != null && Model.Photos.Any())
-                {
-                    var logo = Model.Photos.First();
-                    <div class="text-center mb-3">
-                        <img src="@logo.ImgUrl" alt="@Model.Name" class="img-fluid border p-2" style="max-height: 200px; object-fit: contain;" />
-                    </div>
-                    <form asp-action="DeleteLogo" asp-route-id="@logo.PhotoId" method="post">
-                        <button type="submit" class="btn btn-danger w-100" onclick="return confirm('Delete this logo?');">Delete Logo</button>
-                    </form>
-                    <hr />
-                }
-                else
-                {
-                    <div class="text-center py-4">
-                        <img src="/images/placeholder-logo.png" alt="No logo" class="img-fluid mb-2" style="max-height: 150px;" />
-                        <p class="text-muted">No logo uploaded</p>
-                    </div>
-                }
-
-                <!-- Upload New Logo -->
-                <form asp-action="Edit" method="post" enctype="multipart/form-data">
-                    <input type="hidden" asp-for="SponsorCompanyId" />
-                    <input type="hidden" asp-for="Name" />
-                    <input type="hidden" asp-for="Description" />
-
-                    <div class="mb-3">
-                        <label class="form-label"><strong>@(Model.Photos.Any() ? "Replace Logo" : "Upload Logo")</strong></label>
-                        <input type="file" name="logo" accept="image/*" class="form-control" id="logoInput" required />
-                        <small class="text-muted">PNG or JPG, max 5MB</small>
-                    </div>
-
-                    <div id="logoPreview" class="mb-3"></div>
-
-                    <button type="submit" class="btn btn-success w-100">Upload Logo</button>
-                </form>
-            </div>
-        </div>
-    </div>
 </div>
 
 <script>
-    document.getElementById('logoInput').addEventListener('change', function(e) {
+    document.getElementById('logoInput').addEventListener('change', function (e) {
         const preview = document.getElementById('logoPreview');
         preview.innerHTML = '';
+        preview.className = '';
 
         const file = e.target.files[0];
         if (file) {
             const reader = new FileReader();
-            reader.onload = function(e) {
+
+            reader.onload = function (event) {
+                preview.className = 'sponsor-logo-preview';
                 preview.innerHTML = `
-                    <div class="text-center border p-2">
-                        <img src="${e.target.result}" class="img-fluid" style="max-height: 150px; object-fit: contain;" />
-                    </div>
+                    <img src="${event.target.result}" alt="Logo preview" class="sponsor-logo-preview-img" />
+                    <p class="sponsor-logo-file-name">${file.name}</p>
                 `;
-            }
+            };
+
             reader.readAsDataURL(file);
+        } else {
+            preview.className = 'sponsor-logo-preview-empty mb-3';
         }
     });
 </script>

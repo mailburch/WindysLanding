@@ -1,66 +1,81 @@
 ﻿@model IEnumerable<WindysLanding.Models.SponsorCompany>
+
 @{
     ViewData["Title"] = "Our Sponsors";
 }
 
-<div class="text-center mb-5">
-    <h1>Our Sponsors</h1>
-    <p class="lead">Thank you to our amazing sponsors who make our work possible!</p>
-</div>
+<div class="sponsors-page container py-4">
 
-@if (Model.Any())
-{
-    <div class="row">
-        @foreach (var sponsor in Model)
-        {
-            <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
-                <div class="card h-100 text-center">
-                    <div class="card-body d-flex flex-column justify-content-center">
-                        @if (sponsor.Photos != null && sponsor.Photos.Any())
-                        {
-                            <img src="@sponsor.Photos.First().ImgUrl" alt="@sponsor.Name" class="img-fluid mb-3" style="max-height: 120px; object-fit: contain;" />
-                        }
-                        else
-                        {
-                            <img src="/images/placeholder-logo.png" alt="@sponsor.Name" class="img-fluid mb-3" style="max-height: 120px; object-fit: contain;" />
-                        }
-                        <h5 class="card-title">@sponsor.Name</h5>
-                        @if (!string.IsNullOrEmpty(sponsor.Description))
-                        {
-                            <p class="card-text"><small class="text-muted">@sponsor.Description</small></p>
-                        }
+    <section class="page-hero text-center">
+        <h1 class="page-title">Our Sponsors</h1>
+        <p class="page-subtitle">
+            Thank you to our amazing sponsors who help make our work possible.
+        </p>
+    </section>
+
+    @if (Model.Any())
+    {
+        <section class="content-panel mb-4">
+            <div class="sponsor-grid">
+                @foreach (var sponsor in Model)
+                {
+                    <div class="card sponsor-card">
+                        <div class="card-body text-center">
+                            @if (sponsor.Photos != null && sponsor.Photos.Any())
+                            {
+                                <img src="@sponsor.Photos.First().ImgUrl"
+                                     alt="@sponsor.Name"
+                                     class="sponsor-logo" />
+                            }
+                            else
+                            {
+                                <img src="/images/placeholder-logo.png"
+                                     alt="@sponsor.Name"
+                                     class="sponsor-logo" />
+                            }
+
+                            <h2 class="h5 sponsor-name">@sponsor.Name</h2>
+
+                            @if (!string.IsNullOrWhiteSpace(sponsor.Description))
+                            {
+                                <p class="sponsor-description mb-0">@sponsor.Description</p>
+                            }
+                        </div>
                     </div>
-                </div>
+                }
             </div>
-        }
-    </div>
-}
-else
-{
-    <div class="alert alert-info text-center">
-        <p>We're currently looking for sponsors. Interested in supporting us?</p>
-    </div>
-}
+        </section>
+    }
+    else
+    {
+        <section class="empty-state mb-4">
+            <h2 class="h4 mb-3">We’re currently looking for sponsors</h2>
+            <p class="mb-0">
+                Interested in supporting Windy’s Landing and helping animals in need?
+            </p>
+        </section>
+    }
 
-<!-- Become a Sponsor Section -->
-<div class="card mt-5">
-    <div class="card-header bg-primary text-white">
-        <h4 class="mb-0">Become a Sponsor</h4>
-    </div>
-    <div class="card-body">
-        <p>Your business can make a real difference! By sponsoring Windy's Landing Animal Rescue, you'll help us continue our mission while gaining visibility in the community.</p>
+    <section class="content-panel sponsor-cta">
+        <h2 class="section-title text-center mb-4">Become a Sponsor</h2>
 
-        <h5>Sponsorship Benefits:</h5>
-        <ul>
+        <p>
+            Your business can make a real difference. By sponsoring Windy’s Landing Animal Rescue,
+            you help us continue our mission while gaining visibility in the community.
+        </p>
+
+        <h3 class="h5 mb-3">Sponsorship Benefits</h3>
+        <ul class="sponsor-benefits">
             <li>Logo featured on our website</li>
             <li>Recognition on social media</li>
             <li>Support a great cause in the community</li>
         </ul>
 
         <p class="mb-0">
-            <strong>Interested?</strong> Contact us to learn more about sponsorship opportunities:<br />
+            <strong>Interested?</strong> Contact us to learn more about sponsorship opportunities.<br />
             Email: <a href="mailto:contact@windyslanding.org">contact@windyslanding.org</a><br />
             Phone: (231) 555-1234
         </p>
-    </div>
+    </section>
+
 </div>

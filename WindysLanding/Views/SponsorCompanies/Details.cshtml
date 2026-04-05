@@ -1,30 +1,72 @@
 @model WindysLanding.Models.SponsorCompany
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Sponsor Details";
 }
 
-<h1>Details</h1>
+<div class="sponsors-page container py-4">
 
-<div>
-    <h4>SponsorCompany</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Description)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Description)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.SponsorCompanyId">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    <section class="page-hero text-center">
+        <h1 class="page-title">Sponsor Details</h1>
+        <p class="page-subtitle">
+            View sponsor information and logo details.
+        </p>
+    </section>
+
+    <div class="sponsor-edit-layout">
+
+        <section class="content-panel sponsor-form-panel">
+            <h2 class="section-title mb-4">@Model.Name</h2>
+
+            <dl class="sponsor-details-list mb-0">
+                <div class="sponsor-details-row">
+                    <dt>Name</dt>
+                    <dd>@Model.Name</dd>
+                </div>
+
+                <div class="sponsor-details-row">
+                    <dt>Description</dt>
+                    <dd>
+                        @if (!string.IsNullOrWhiteSpace(Model.Description))
+                        {
+                            @Model.Description
+                        }
+                        else
+                        {
+                            <span class="text-muted">No description provided.</span>
+                        }
+                    </dd>
+                </div>
+            </dl>
+
+            <div class="d-flex flex-wrap gap-2 mt-4">
+                <a asp-action="Edit" asp-route-id="@Model.SponsorCompanyId" class="btn btn-primary">Edit</a>
+                <a asp-action="Index" class="btn btn-outline-secondary">Back to List</a>
+            </div>
+        </section>
+
+        <section class="content-panel">
+            <h2 class="section-title mb-4">Logo</h2>
+
+            @if (Model.Photos != null && Model.Photos.Any())
+            {
+                <div class="sponsor-current-logo">
+                    <img src="@Model.Photos.First().ImgUrl"
+                         alt="@Model.Name"
+                         class="sponsor-logo-preview-img" />
+                </div>
+            }
+            else
+            {
+                <div class="sponsor-no-logo">
+                    <img src="/images/placeholder-logo.png"
+                         alt="No logo"
+                         class="sponsor-logo-preview-img" />
+                    <p class="mb-0">No logo uploaded</p>
+                </div>
+            }
+        </section>
+
+    </div>
+
 </div>

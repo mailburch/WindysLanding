@@ -4,110 +4,113 @@
     ViewData["Title"] = "Create Animal";
 }
 
-<h1>Add New Animal</h1>
+<div class="animals-page container py-4">
 
-<hr />
-<form asp-action="Create" method="post" enctype="multipart/form-data">
-    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <section class="page-hero text-center">
+        <h1 class="page-title">Add New Animal</h1>
+        <p class="page-subtitle">Add a new animal profile, photos, and adoption details.</p>
+    </section>
 
-    <div class="form-group">
-        <label asp-for="Name" class="control-label"></label>
-        <input asp-for="Name" class="form-control" />
-        <span asp-validation-for="Name" class="text-danger"></span>
-    </div>
+    <section class="content-panel animal-form-panel">
+        <form asp-action="Create" method="post" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
-    <div class="form-group">
-        <label asp-for="AnimalType" class="control-label"></label>
-        <input asp-for="AnimalType" class="form-control" />
-        <span asp-validation-for="AnimalType" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <label asp-for="Age" class="control-label"></label>
-        <input asp-for="Age" class="form-control" />
-        <span asp-validation-for="Age" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <label asp-for="Size" class="control-label"></label>
-        <input asp-for="Size" class="form-control" />
-        <span asp-validation-for="Size" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <label asp-for="Description" class="control-label"></label>
-        <textarea asp-for="Description" class="form-control" rows="4"></textarea>
-        <span asp-validation-for="Description" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <label asp-for="Gender" class="control-label"></label>
-        <input asp-for="Gender" class="form-control" />
-        <span asp-validation-for="Gender" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <label asp-for="Breed" class="control-label"></label>
-        <input asp-for="Breed" class="form-control" />
-        <span asp-validation-for="Breed" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <label asp-for="Color" class="control-label"></label>
-        <input asp-for="Color" class="form-control" />
-        <span asp-validation-for="Color" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <label asp-for="Experience" class="control-label"></label>
-        <textarea asp-for="Experience" class="form-control"></textarea>
-        <span asp-validation-for="Experience" class="text-danger"></span>
-    </div>
-
-    <hr />
-
-    <h4>Photos</h4>
-    <div class="card mb-3">
-        <div class="card-body">
             <div class="mb-3">
-                <label class="form-label"><strong>Upload Photos</strong></label>
-                <input type="file" name="photos" multiple accept="image/*" class="form-control" id="photoInput" />
-                <small class="text-muted">Select one or more photos (hold Ctrl/Cmd to select multiple). Max 10MB per photo.</small>
+                <label asp-for="Name" class="form-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
             </div>
 
-            <div id="photoPreview" class="row g-2"></div>
-        </div>
-    </div>
+            <div class="mb-3">
+                <label asp-for="AnimalType" class="form-label"></label>
+                <input asp-for="AnimalType" class="form-control" />
+                <span asp-validation-for="AnimalType" class="text-danger"></span>
+            </div>
 
-    <hr />
+            <div class="mb-3">
+                <label asp-for="Age" class="form-label"></label>
+                <input asp-for="Age" class="form-control" />
+                <span asp-validation-for="Age" class="text-danger"></span>
+            </div>
 
-    <h4>Status & Sponsorship</h4>
+            <div class="mb-3">
+                <label asp-for="Size" class="form-label"></label>
+                <input asp-for="Size" class="form-control" />
+                <span asp-validation-for="Size" class="text-danger"></span>
+            </div>
 
-    <div class="form-check mb-2">
-        <input class="form-check-input" asp-for="AdoptionStatus" />
-        <label class="form-check-label" asp-for="AdoptionStatus">Already Adopted</label>
-    </div>
+            <div class="mb-3">
+                <label asp-for="Description" class="form-label"></label>
+                <textarea asp-for="Description" class="form-control" rows="4"></textarea>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
 
-    <div class="form-check mb-3">
-        <input class="form-check-input" asp-for="SponsorshipAvailable" checked />
-        <label class="form-check-label" asp-for="SponsorshipAvailable">Available for Sponsorship</label>
-    </div>
+            <div class="mb-3">
+                <label asp-for="Gender" class="form-label"></label>
+                <input asp-for="Gender" class="form-control" />
+                <span asp-validation-for="Gender" class="text-danger"></span>
+            </div>
 
-    <div class="form-group mb-4">
-        <label asp-for="SponsorshipUrl" class="control-label"></label>
-        <input asp-for="SponsorshipUrl" class="form-control" placeholder="https://..." />
-        <span asp-validation-for="SponsorshipUrl" class="text-danger"></span>
-        <small class="text-muted">Optional: Link to sponsorship payment page</small>
-    </div>
+            <div class="mb-3">
+                <label asp-for="Breed" class="form-label"></label>
+                <input asp-for="Breed" class="form-control" />
+                <span asp-validation-for="Breed" class="text-danger"></span>
+            </div>
 
-    <div class="form-group">
-        <button type="submit" class="btn btn-primary btn-lg">Create Animal</button>
-        <a asp-action="Index" class="btn btn-secondary">Cancel</a>
-    </div>
-</form>
+            <div class="mb-3">
+                <label asp-for="Color" class="form-label"></label>
+                <input asp-for="Color" class="form-control" />
+                <span asp-validation-for="Color" class="text-danger"></span>
+            </div>
+
+            <div class="mb-4">
+                <label asp-for="Experience" class="form-label"></label>
+                <textarea asp-for="Experience" class="form-control"></textarea>
+                <span asp-validation-for="Experience" class="text-danger"></span>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-header">Photos</div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label class="form-label">Upload Photos</label>
+                        <input type="file" name="photos" multiple accept="image/*" class="form-control" id="photoInput" />
+                        <small class="text-muted">Select one or more photos. Max 10MB per photo.</small>
+                    </div>
+
+                    <div id="photoPreview" class="row g-2"></div>
+                </div>
+            </div>
+
+            <h4 class="section-title mb-3">Status & Sponsorship</h4>
+
+            <div class="form-check mb-2">
+                <input class="form-check-input" asp-for="AdoptionStatus" />
+                <label class="form-check-label" asp-for="AdoptionStatus">Already Adopted</label>
+            </div>
+
+            <div class="form-check mb-3">
+                <input class="form-check-input" asp-for="SponsorshipAvailable" checked />
+                <label class="form-check-label" asp-for="SponsorshipAvailable">Available for Sponsorship</label>
+            </div>
+
+            <div class="mb-4">
+                <label asp-for="SponsorshipUrl" class="form-label"></label>
+                <input asp-for="SponsorshipUrl" class="form-control" placeholder="https://..." />
+                <span asp-validation-for="SponsorshipUrl" class="text-danger"></span>
+                <small class="text-muted">Optional: Link to sponsorship payment page</small>
+            </div>
+
+            <div class="d-flex flex-wrap gap-2">
+                <button type="submit" class="btn btn-primary">Create Animal</button>
+                <a asp-action="Index" class="btn btn-outline-secondary">Cancel</a>
+            </div>
+        </form>
+    </section>
+
+</div>
 
 <script>
-    // Photo preview with removal
     let selectedFiles = [];
 
     document.getElementById('photoInput').addEventListener('change', function(e) {
@@ -127,13 +130,11 @@
                     const col = document.createElement('div');
                     col.className = 'col-md-3';
                     col.innerHTML = `
-                        <div class="border p-2 position-relative">
-                            <button type="button" class="btn btn-danger btn-sm position-absolute top-0 end-0 m-1"
-                                    onclick="removePhoto(${index})" style="z-index: 10;">
-                                <small>×</small>
-                            </button>
-                            <img src="${e.target.result}" class="img-fluid" style="height: 150px; width: 100%; object-fit: cover;" />
-                            <small class="d-block text-center mt-1">${file.name}</small>
+                        <div class="animal-preview-box position-relative">
+                            <button type="button" class="btn btn-outline-danger btn-sm position-absolute top-0 end-0 m-1"
+                                    onclick="removePhoto(${index})" style="z-index: 10;">×</button>
+                            <img src="${e.target.result}" class="animal-card-img" alt="Preview" />
+                            <small class="d-block text-center mt-2">${file.name}</small>
                         </div>
                     `;
                     preview.appendChild(col);
@@ -154,10 +155,7 @@
         const input = document.getElementById('photoInput');
         const dataTransfer = new DataTransfer();
 
-        selectedFiles.forEach(file => {
-            dataTransfer.items.add(file);
-        });
-
+        selectedFiles.forEach(file => dataTransfer.items.add(file));
         input.files = dataTransfer.files;
     }
 </script>

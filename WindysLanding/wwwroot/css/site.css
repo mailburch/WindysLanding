@@ -616,3 +616,128 @@ a {
         grid-template-columns: 1fr;
     }
 }
+
+/* =========================
+   ANIMALS
+========================= */
+
+.animals-page .animal-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1.25rem;
+}
+
+.animals-page .animal-card,
+.animals-page .animal-manage-card {
+    height: 100%;
+}
+
+.animals-page .animal-card-img,
+.animals-page .animal-detail-img,
+.animals-page .animal-thumb {
+    width: 100%;
+    display: block;
+    border-radius: 16px;
+    border: 1px solid var(--wl-border);
+    background-color: #fffdf9;
+}
+
+.animals-page .animal-card-img {
+    height: 250px;
+    object-fit: cover;
+}
+
+.animals-page .animal-detail-img {
+    height: 400px;
+    object-fit: cover;
+}
+
+.animals-page .animal-thumb {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+.animals-page .animal-name {
+    color: var(--wl-animals);
+    font-weight: 800;
+}
+
+.animals-page .animal-meta,
+.animals-page .animal-description,
+.animals-page .animal-details-row dd,
+.animals-page .animal-no-photo p {
+    color: var(--wl-text);
+    line-height: 1.7;
+}
+
+.animals-page .animal-details-list {
+    margin: 0;
+}
+
+.animals-page .animal-details-row {
+    padding: 0.9rem 0;
+    border-bottom: 1px solid var(--wl-border);
+}
+
+    .animals-page .animal-details-row:last-child {
+        border-bottom: none;
+    }
+
+    .animals-page .animal-details-row dt {
+        color: var(--wl-animals);
+        font-weight: 700;
+        margin-bottom: 0.35rem;
+    }
+
+.animals-page .animal-form-panel {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.animals-page .animal-edit-layout,
+.animals-page .animal-detail-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) minmax(280px, 1fr);
+    gap: 1.5rem;
+    align-items: start;
+}
+
+.animals-page .animal-preview-box,
+.animals-page .animal-no-photo,
+.animals-page .animal-delete-warning {
+    border: 1px solid var(--wl-border);
+    border-radius: 16px;
+    background-color: #fffdf9;
+    padding: 1rem;
+    text-align: center;
+}
+
+.animals-page .animal-photo-list {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.animals-page .animal-photo-row {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem;
+    border: 1px solid var(--wl-border);
+    border-radius: 12px;
+    background-color: #fffdf9;
+    margin-bottom: 0.75rem;
+}
+
+.animals-page .animal-delete-warning p {
+    color: var(--wl-text);
+    line-height: 1.7;
+}
+
+@media (max-width: 991.98px) {
+    .animals-page .animal-edit-layout,
+    .animals-page .animal-detail-layout {
+        grid-template-columns: 1fr;
+    }
+}
